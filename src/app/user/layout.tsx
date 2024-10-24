@@ -14,26 +14,26 @@ export default async function UserLayout({
         <div className="base-nav">
             <Link href="/user" className="nav-item">
                 <div className="nav-image">
-                    <FontAwesomeIcon icon={faHome}/>
+                    <FontAwesomeIcon icon={faHome} aria-label={t('nav.home')}/>
                 </div>
                 <p className="nav-content">{t('nav.home')}</p>
             </Link>
             <Link href="/user/authorizations" className="nav-item">
                 <div className="nav-image">
-                    <FontAwesomeIcon icon={faTicket}/>
+                    <FontAwesomeIcon icon={faTicket} aria-label={t('nav.authorizations')}/>
                 </div>
                 <p className="nav-content">{t('nav.authorizations')}</p>
             </Link>
-            <p className="text-xs text-center mt-5 mb-2 text-gray-600 dark:text-gray-400">{t('nav.developers')}</p>
+            <p className="text-xs text-center mt-5 mb-2 text-gray-600 dark:text-gray-400 lg:block hidden">{t('nav.developers')}</p>
             <Link href="/user/organizations" className="nav-item">
                 <div className="nav-image">
-                    <FontAwesomeIcon icon={faPeopleGroup}/>
+                    <FontAwesomeIcon icon={faPeopleGroup} aria-label={t('nav.organizations')}/>
                 </div>
                 <p className="nav-content">{t('nav.organizations')}</p>
             </Link>
             <Link href="/user/applications" className="nav-item">
                 <div className="nav-image">
-                    <FontAwesomeIcon icon={faCode}/>
+                    <FontAwesomeIcon icon={faCode} aria-label={t('nav.applications')}/>
                 </div>
                 <p className="nav-content">{t('nav.applications')}</p>
             </Link>

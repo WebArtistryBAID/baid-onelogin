@@ -15,7 +15,7 @@ h1 {
 }
 
 .base-nav {
-  @apply backdrop-blur-3xl backdrop-filter bg-gray-50/50 dark:bg-slate-700/40 h-8 flex-shrink lg:h-full p-5;
+  @apply backdrop-blur-3xl backdrop-filter bg-gray-50/50 dark:bg-slate-700/40 lg:block flex flex-shrink lg:h-full items-center p-3 lg:p-5 rounded-3xl lg:rounded-none
 }
 
 .base-content {
@@ -23,11 +23,11 @@ h1 {
 }
 
 .nav-item {
-  @apply w-full flex items-center;
+  @apply w-auto mx-auto lg:w-full flex items-center;
 }
 
 .nav-item:not(:last-of-type) {
-  @apply mb-3;
+  @apply lg:mb-3;
 }
 
 .nav-image {
@@ -35,7 +35,7 @@ h1 {
 }
 
 .nav-content {
-  @apply flex-grow text-sm;
+  @apply flex-grow text-sm hidden lg:block;
 }
 
 @layer utilities {
