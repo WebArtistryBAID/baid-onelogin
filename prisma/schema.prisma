@@ -21,6 +21,7 @@ model User {
   name          String
   pinyin        String
   phone         String?
+  avatar String
   adminClass0   String
   classTeacher0 String
   gender        Gender
@@ -33,27 +34,27 @@ model User {
 }
 
 model Application {
-  id            Int       @id @default(autoincrement())
-  name          String
-  icon          String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  redirectUrls  String[]
-  scopes        Scope[]
-  clientId      String
-  clientSecret  String
-  owner User           @relation(fields: [ownerId], references: [seiueId])
-  ownerId       Int
-  message       String
-  approved      Boolean
-  terms         String
-  privacy       String
-  logs          AppAuditLog[]
-  auths Authorization[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  icon         String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  redirectUrls String[]
+  scopes       Scope[]
+  clientId     String
+  clientSecret String
+  owner        User           @relation(fields: [ownerId], references: [seiueId])
+  ownerId      Int
+  message      String
+  approved     Boolean
+  terms        String
+  privacy      String
+  logs         AppAuditLog[]
+  auths        Authorization[]
 }
 
 model Authorization {
-  id            Int    @id @default(autoincrement())
+  id   Int  @id @default(autoincrement())
   user User @relation(fields: [userId], references: [seiueId])
   userId        Int
   application   Application @relation(fields: [applicationId], references: [id])
@@ -61,21 +62,21 @@ model Authorization {
 }
 
 model UserAuditLog {
-  id            Int    @id @default(autoincrement())
-  time DateTime         @default(now())
-  type UserAuditLogType
-  user User             @relation(fields: [userId], references: [seiueId])
-  userId        Int
-  values        String[]
+  id     Int              @id @default(autoincrement())
+  time   DateTime         @default(now())
+  type   UserAuditLogType
+  user   User             @relation(fields: [userId], references: [seiueId])
+  userId Int
+  values String[]
 }
 
 model AppAuditLog {
-  id              Int    @id @default(autoincrement())
-  time          DateTime       @default(now())
+  id            Int             @id @default(autoincrement())
+  time          DateTime        @default(now())
   type          AppAuditLogType
-  application     Application @relation(fields: [applicationId], references: [id])
+  application   Application     @relation(fields: [applicationId], references: [id])
   applicationId   Int
-  operationUser User           @relation(fields: [operationUserId], references: [seiueId])
+  operationUser User            @relation(fields: [operationUserId], references: [seiueId])
   operationUserId Int
   values          String[]
 }

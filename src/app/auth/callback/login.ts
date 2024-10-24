@@ -22,8 +22,10 @@ export default async function login(error: boolean | null, tok: string | null, t
             headers: {
                 Authorization: `Bearer ${tok}`,
                 'X-School-Id': '452'
-            }
-        })
+            },
+            cache: 'no-store'
+        }
+    )
 
     if (!r.ok) {
         return target + '?error=build'
@@ -79,7 +81,8 @@ export default async function login(error: boolean | null, tok: string | null, t
     const token = await new SignJWT({
         seiueId: user.seiueId,
         name: user.name,
-        pinyin: user.pinyin
+        pinyin: user.pinyin,
+        type: 'internal'
     })
         .setIssuedAt()
         .setIssuer('https://beijing.academy')

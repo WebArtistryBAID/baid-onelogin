@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "home": "Onboarding",
+    "applications": "Applications",
+    "developers": "For Developers",
+    "authorizations": "Authorizations",
+    "organizations": "Organizations"
+  },
+  "welcome": "Welcome"
+}

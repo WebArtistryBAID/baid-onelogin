@@ -1,8 +1,8 @@
 'use client'
 
-import {useTranslationClient} from '@/app/i18n/client'
-import {useEffect} from 'react'
-import {useSearchParams} from 'next/navigation'
+import { useTranslationClient } from '@/app/i18n/client'
+import { useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import login from '@/app/auth/callback/login'
 
 export default function AuthCallback() {
@@ -18,7 +18,7 @@ export default function AuthCallback() {
 
         if (match && match[1]) {
             const token = match[1]
-            login(false, token, redir!).then((url) => {
+            login(false, token, redir!).then(url => {
                 location.href = url
             })
         }

@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "home": "用户信息",
+    "applications": "应用",
+    "developers": "开发者",
+    "authorizations": "已授权应用",
+    "organizations": "组织"
+  },
+  "welcome": "欢迎"
+}
