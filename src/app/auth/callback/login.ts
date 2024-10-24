@@ -1,9 +1,9 @@
 'use server'
 
-import {cookies, headers} from 'next/headers'
-import {SignJWT} from 'jose'
-import {PrismaClient} from '@prisma/client'
-import {createSecretKey} from 'node:crypto'
+import { cookies, headers } from 'next/headers'
+import { SignJWT } from 'jose'
+import { Gender, PrismaClient, UserAuditLogType, UserType } from '@prisma/client'
+import { createSecretKey } from 'node:crypto'
 
 const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
@@ -43,9 +43,9 @@ export default async function login(error: boolean | null, tok: string | null, t
         phone: json['phone'],
         adminClass0: (json['admin_classes'] == null || json['admin_classes'].length < 1) ? '' : json['admin_classes'][0],
         classTeacher0: (json['class_teachers'] == null || json['class_teachers'].length < 1) ? '' : json['class_teachers'][0],
-        gender: (json['gender'] === 'm' ? 'male' : (json['gender'] === 'f' ? 'female' : 'others')),
+        gender: (json['gender'] === 'm' ? Gender.male : (json['gender'] === 'f' ? Gender.female : Gender.others)),
         lastUserAgent: head.get('User-Agent') ?? '',
-        type: json['role']
+        type: json['role'] === 'student' ? UserType.student : UserType.teacher
     }
 
     if (user == null) {
@@ -55,7 +55,7 @@ export default async function login(error: boolean | null, tok: string | null, t
         await prisma.userAuditLog.create({
             data: {
                 userId: user.seiueId,
-                type: 'created',
+                type: UserAuditLogType.created,
                 values: [head.get('User-Agent') ?? '', ip]
             }
         })
@@ -69,7 +69,7 @@ export default async function login(error: boolean | null, tok: string | null, t
         await prisma.userAuditLog.create({
             data: {
                 userId: user.seiueId,
-                type: 'logIn',
+                type: UserAuditLogType.logIn,
                 values: [head.get('User-Agent') ?? '', ip]
             }
         })
