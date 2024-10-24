@@ -9,20 +9,27 @@ generator client {
 }
 
 datasource db {
-  provider = ["sqlite", "mysql"]
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id            Int   @id @default(autoincrement())
+  seiueId       Int             @id @unique
+  schoolId      String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   name          String
   pinyin        String
-  phone         String
-  seiueId       String
-  seiueUsername String
+  phone         String?
+  adminClass0   String
+  classTeacher0 String
+  gender        Gender
   lastUserAgent String
   type          UserType
   logs          UserAuditLog[]
+  appLogs       AppAuditLog[]
+  auths         Authorization[]
+  apps          Application[]
 }
 
 model Application {
@@ -35,18 +42,19 @@ model Application {
   scopes        Scope[]
   clientId      String
   clientSecret  String
-  owner         User      @relation(fields: [ownerId], references: [id])
+  owner User           @relation(fields: [ownerId], references: [seiueId])
   ownerId       Int
   message       String
   approved      Boolean
   terms         String
   privacy       String
   logs          AppAuditLog[]
+  auths Authorization[]
 }
 
 model Authorization {
   id            Int    @id @default(autoincrement())
-  user          User   @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [seiueId])
   userId        Int
   application   Application @relation(fields: [applicationId], references: [id])
   applicationId Int
@@ -54,16 +62,20 @@ model Authorization {
 
 model UserAuditLog {
   id            Int    @id @default(autoincrement())
-  user          User   @relation(fields: [userId], references: [id])
+  time DateTime         @default(now())
+  type UserAuditLogType
+  user User             @relation(fields: [userId], references: [seiueId])
   userId        Int
   values        String[]
 }
 
 model AppAuditLog {
   id              Int    @id @default(autoincrement())
+  time          DateTime       @default(now())
+  type          AppAuditLogType
   application     Application @relation(fields: [applicationId], references: [id])
   applicationId   Int
-  operationUser   User @relation(fields: [operationUserId], references: [id])
+  operationUser User           @relation(fields: [operationUserId], references: [seiueId])
   operationUserId Int
   values          String[]
 }
@@ -74,9 +86,8 @@ enum UserType {
 }
 
 enum UserAuditLogType {
-  created
-  logIn
-  updated
+  created // [User agent, IP address]
+  logIn // [User agent, IP address]
   authorizedApp
   deauthorizedApp
 }
@@ -92,4 +103,10 @@ enum AppAuditLogType {
 enum Scope {
   basic
   calendar
+}
+
+enum Gender {
+  male
+  female
+  others
 }

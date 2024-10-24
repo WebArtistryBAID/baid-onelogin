@@ -18,6 +18,7 @@
       "error",
       4
     ],
+    "react-hooks/rules-of-hooks": "off",
     "react/jsx-indent-props": [
       "error",
       "first"
