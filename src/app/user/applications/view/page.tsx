@@ -1,7 +1,7 @@
 'use client'
 
 import {redirect} from 'next/navigation'
-import {getMyAppByIDSecure, refreshAppSecret, updateApp} from '@/app/lib/appActions'
+import {deleteApp, getMyAppByIDSecure, refreshAppSecret, updateApp} from '@/app/lib/appActions'
 import {AppIcon} from '@/app/user/applications/AppIcon'
 import {getUserNameByID} from '@/app/lib/userActions'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -31,6 +31,8 @@ export default function ApplicationView({searchParams}: { searchParams: never })
 
     const [unsaved, setUnsaved] = useState(false)
     const [saveLoading, setSaveLoading] = useState(false)
+    const [deleteConfirm, setDeleteConfirm] = useState(false)
+    const [deleting, setDeleting] = useState(false)
 
     if (!('app' in searchParams)) {
         redirect('/user/applications')
@@ -66,38 +68,8 @@ export default function ApplicationView({searchParams}: { searchParams: never })
     }
 
     return <div className="h-full overflow-y-auto relative" style={{transform: 'translateZ(0)'}}
-                onScroll={(e) => setPositioning(e.currentTarget.scrollTop)}>
+                onScroll={(e) => setPositioning(Math.min(e.currentTarget.scrollHeight, e.currentTarget.scrollTop))}>
         <h1 className="mb-5">{t('view.title')}</h1>
-
-        <div
-            className={`absolute bottom-0 z-20 w-full transition-opacity duration-100 ${unsaved ? 'opacity-100' : 'opacity-0'}`}
-            style={{transform: `translateY(${positioning}px)`}}>
-            <div className="w-full flex items-center rounded-full bg-secondary shadow-lg pl-3">
-                <FontAwesomeIcon icon={faWarning} className="flex-shrink mr-3"/>
-                <p className="flex-grow py-3">{app.approved ? t('view.changesApproved') : t('view.changes')}</p>
-                <button onClick={() => location.reload()}
-                        className="btn-secondary flex-shrink">{t('view.cancel')}</button>
-                <button disabled={saveLoading} onClick={async () => {
-                    setSaveLoading(true)
-                    const a = await updateApp({
-                        message,
-                        terms,
-                        privacy,
-                        redirectUrls: redirectURIs,
-                        scopes: scopes.map(s => Scope[s as keyof typeof Scope])
-                    })
-                    setMessage(a.message)
-                    setTerms(a.terms ?? '')
-                    setPrivacy(a.privacy ?? '')
-                    setRedirectURIs(a.redirectUrls)
-                    setRedirectURI('')
-                    setScopes(a.scopes)
-                    setApp(a)
-                    setUnsaved(false)
-                    setSaveLoading(false)
-                }} className="btn flex-shrink">{t(saveLoading ? 'view.saving' : 'view.save')}</button>
-            </div>
-        </div>
 
         <div
             className="flex flex-col lg:flex-row w-full lg:justify-start lg:text-left text-center justify-center items-center mb-5">
@@ -233,6 +205,61 @@ export default function ApplicationView({searchParams}: { searchParams: never })
         <p className="text-sm secondary mb-1">{t('view.auditLogs')}</p>
         <button className="btn mb-3">{t('view.viewAuditLogs')}</button>
         <p className="text-sm secondary mb-1">{t('view.others')}</p>
-        <button className="btn-danger mb-3">{t('view.delete')}</button>
+        <button className="btn-danger mb-3" onClick={() => setDeleteConfirm(true)}>{t('view.delete')}</button>
+
+
+        <div
+            className={`sticky bottom-0 w-full transition-opacity duration-100 ${deleteConfirm ? 'z-30 opacity-100' : 'opacity-0'}`}>
+            <div className="w-full flex items-center rounded-full bg-secondary shadow-lg pl-3">
+                <FontAwesomeIcon icon={faWarning} className="flex-shrink mr-3"/>
+                <p className="flex-grow py-3">{t('view.deleteConfirm')}</p>
+                <button onClick={() => {
+                    setDeleteConfirm(false)
+                }}
+                        className="btn-secondary flex-shrink">{t('view.cancel')}</button>
+                <button disabled={saveLoading} onClick={async () => {
+                    setDeleting(true)
+                    await deleteApp(app.id)
+                    location.href = '/user/applications'
+                }} className="btn-danger flex-shrink">{t(deleting ? 'view.deleting' : 'view.confirm')}</button>
+            </div>
+        </div>
+
+        <div
+            className={`sticky bottom-0 w-full transition-opacity duration-100 ${unsaved ? 'z-30 opacity-100' : 'opacity-0'}`}>
+            <div className="w-full flex items-center rounded-full bg-secondary shadow-lg pl-3">
+                <FontAwesomeIcon icon={faWarning} className="flex-shrink mr-3"/>
+                <p className="flex-grow py-3">{app.approved ? t('view.changesApproved') : t('view.changes')}</p>
+                <button onClick={() => {
+                    setMessage(app.message)
+                    setTerms(app.terms ?? '')
+                    setPrivacy(app.privacy ?? '')
+                    setRedirectURIs(app.redirectUrls)
+                    setRedirectURI('')
+                    setScopes(app.scopes)
+                    setUnsaved(false)
+                }}
+                        className="btn-secondary flex-shrink">{t('view.cancel')}</button>
+                <button disabled={saveLoading} onClick={async () => {
+                    setSaveLoading(true)
+                    const a = await updateApp({
+                        message,
+                        terms,
+                        privacy,
+                        redirectUrls: redirectURIs,
+                        scopes: scopes.map(s => Scope[s as keyof typeof Scope])
+                    })
+                    setMessage(a.message)
+                    setTerms(a.terms ?? '')
+                    setPrivacy(a.privacy ?? '')
+                    setRedirectURIs(a.redirectUrls)
+                    setRedirectURI('')
+                    setScopes(a.scopes)
+                    setApp(a)
+                    setUnsaved(false)
+                    setSaveLoading(false)
+                }} className="btn flex-shrink">{t(saveLoading ? 'view.saving' : 'view.save')}</button>
+            </div>
+        </div>
     </div>
 }

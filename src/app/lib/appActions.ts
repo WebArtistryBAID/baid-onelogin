@@ -161,9 +161,9 @@ export async function deleteApp(id: number): Promise<void> {
     if (app == null) {
         throw new Error('Application not found')
     }
-    prisma.application.delete({
+    await prisma.application.delete({
         where: {
-            id: app.id
+            id
         }
     })
 }

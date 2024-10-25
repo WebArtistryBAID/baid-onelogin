@@ -37,7 +37,7 @@
     "scopes": "Scopes",
     "scopesInfo": "You will only be able to request these scopes when authorizing.",
     "changes": "Your changes are not saved yet.",
-    "changesApproved": "Your application will be disabled before your changes are re-approved.",
+    "changesApproved": "Changes require re-approval for your app.",
     "auditLogs": "Audit Logs",
     "viewAuditLogs": "View Audit Logs",
     "save": "Save",
@@ -47,6 +47,7 @@
     "delete": "Delete Application",
     "deleteConfirm": "Are you sure you want to delete this application?",
     "confirm": "Confirm",
+    "deleting": "Deleting...",
     "addRedirect": "Add",
     "addRedirectPlaceholder": "Redirect URI",
     "deleteRedirect": "Delete"

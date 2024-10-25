@@ -37,7 +37,7 @@
     "scopes": "Scopes",
     "scopesInfo": "您只能在授权时请求这些 Scopes。",
     "changes": "您的更改尚未保存。",
-    "changesApproved": "您的应用将在您的更改重新审批前被禁用。",
+    "changesApproved": "更改将会要求重新审批本应用。",
     "auditLogs": "审计日志",
     "viewAuditLogs": "查看审计日志",
     "save": "保存",
@@ -47,6 +47,7 @@
     "delete": "删除程序",
     "deleteConfirm": "您确定要删除此应用吗？",
     "confirm": "确认",
+    "deleting": "删除中...",
     "addRedirect": "添加",
     "addRedirectPlaceholder": "Redirect URI",
     "deleteRedirect": "删除"
