@@ -48,6 +48,8 @@
     "deleteConfirm": "您确定要删除此应用吗？",
     "confirm": "确认",
     "deleting": "删除中...",
+    "approve": "批准",
+    "removeApprove": "取消批准",
     "addRedirect": "添加",
     "addRedirectPlaceholder": "Redirect URI",
     "deleteRedirect": "删除"

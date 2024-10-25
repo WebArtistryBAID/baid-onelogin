@@ -150,6 +150,44 @@ export async function updateApp(data: Partial<Application>): Promise<Application
     })
 }
 
+export async function setAppApprovalStatus(id: number, approved: boolean): Promise<Application> {
+    const user = await getMe()
+    if (!user.admin) {
+        throw new Error('You do not have permission to approve applications')
+    }
+    const app = await prisma.application.findFirst({
+        where: {
+            id
+        }
+    })
+    if (app == null) {
+        throw new Error('Application not found')
+    }
+    prisma.appAuditLog.create({
+        data: {
+            type: 'updated',
+            application: {
+                connect: {
+                    id: app.id
+                }
+            },
+            operationUser: {
+                connect: {
+                    seiueId: user.seiueId
+                }
+            }
+        }
+    })
+    return prisma.application.update({
+        where: {
+            id: app.id
+        },
+        data: {
+            approved
+        }
+    })
+}
+
 export async function deleteApp(id: number): Promise<void> {
     const user = await getMe()
     const app = await prisma.application.findFirst({

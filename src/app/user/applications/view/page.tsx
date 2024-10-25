@@ -1,26 +1,26 @@
 'use client'
 
 import {redirect} from 'next/navigation'
-import {deleteApp, getMyAppByIDSecure, refreshAppSecret, updateApp} from '@/app/lib/appActions'
+import {deleteApp, getMyAppByIDSecure, refreshAppSecret, setAppApprovalStatus, updateApp} from '@/app/lib/appActions'
 import {AppIcon} from '@/app/user/applications/AppIcon'
-import {getUserNameByID} from '@/app/lib/userActions'
+import {getMe, getUserNameByID} from '@/app/lib/userActions'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCopy} from '@fortawesome/free-regular-svg-icons'
 import {useTranslationClient} from '@/app/i18n/client'
 import {useEffect, useState} from 'react'
-import {$Enums, Application} from '@prisma/client'
+import {$Enums, Application, User} from '@prisma/client'
 import {faClose, faRefresh, faWarning} from '@fortawesome/free-solid-svg-icons'
 import Scope = $Enums.Scope
 
 export default function ApplicationView({searchParams}: { searchParams: never }) {
     const {t} = useTranslationClient('applications')
+    const [me, setMe] = useState<User | null>(null)
+
     const [copiedHighlight, setCopiedHighlight] = useState(false)
     const [copiedHighlightSecret, setCopiedHighlightSecret] = useState(false)
     const [app, setApp] = useState<Application | null>(null)
     const [ownerName, setOwnerName] = useState('')
     const [secret, setSecret] = useState<string | null>('secret' in searchParams ? searchParams['secret'] : null)
-
-    const [positioning, setPositioning] = useState(0)
 
     const [message, setMessage] = useState('')
     const [terms, setTerms] = useState('')
@@ -52,10 +52,11 @@ export default function ApplicationView({searchParams}: { searchParams: never })
             setRedirectURIs(a.redirectUrls)
             setScopes(a.scopes)
             setApp(a!)
+            setMe(await getMe())
         })()
     }, [searchParams])
 
-    if (app == null) {
+    if (app == null || me == null) {
         return <div>
             <h1 className="mb-5">{t('view.title')}</h1>
             <div className="rounded-3xl bg-secondary w-1/2 h-8 mb-2"></div>
@@ -67,8 +68,7 @@ export default function ApplicationView({searchParams}: { searchParams: never })
         </div>
     }
 
-    return <div className="h-full overflow-y-auto relative" style={{transform: 'translateZ(0)'}}
-                onScroll={(e) => setPositioning(Math.min(e.currentTarget.scrollHeight, e.currentTarget.scrollTop))}>
+    return <div className="h-full overflow-y-auto relative" style={{transform: 'translateZ(0)'}}>
         <h1 className="mb-5">{t('view.title')}</h1>
 
         <div
@@ -86,9 +86,18 @@ export default function ApplicationView({searchParams}: { searchParams: never })
         <p className="text-xl mb-3">{ownerName}</p>
 
         <p className="text-sm secondary">{t('view.approval')}</p>
-        <p className={`text-xl ${app.approved ? 'mb-3' : 'mb-1'}`}>{app.approved ?
+        <p className={`text-xl ${app.approved && !me.admin ? 'mb-3' : 'mb-1'}`}>{app.approved ?
             <span className="text-green-500">{t('view.approved')}</span> : t('view.pending')}</p>
-        {!app.approved ? <button className="btn mb-1">{t('view.requestApproval')}</button> : null}
+        {me.admin ? (!app.approved
+            ? <button className="btn mb-1" onClick={async () => {
+                await setAppApprovalStatus(app.id, true)
+                location.reload()
+            }}>{t('view.approve')}</button>
+            : <button className="btn mb-3" onClick={async () => {
+                await setAppApprovalStatus(app.id, false)
+                location.reload()
+            }}>{t('view.removeApprove')}</button>) : null}
+        {!app.approved && !me.admin ? <button className="btn mb-1">{t('view.requestApproval')}</button> : null}
         {!app.approved ? <p className="text-xs secondary mb-3">{t('view.approvalInfo')}</p> : null}
 
         <p className="text-sm secondary mb-1">{t('view.clientId')}</p>

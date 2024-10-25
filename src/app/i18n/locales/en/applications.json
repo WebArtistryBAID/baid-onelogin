@@ -48,6 +48,8 @@
     "deleteConfirm": "Are you sure you want to delete this application?",
     "confirm": "Confirm",
     "deleting": "Deleting...",
+    "approve": "Approve",
+    "removeApprove": "Remove Approval",
     "addRedirect": "Add",
     "addRedirectPlaceholder": "Redirect URI",
     "deleteRedirect": "Delete"
