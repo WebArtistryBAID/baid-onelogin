@@ -41,6 +41,7 @@
     "auditLogs": "Audit Logs",
     "viewAuditLogs": "View Audit Logs",
     "save": "Save",
+    "saving": "Saving...",
     "cancel": "Cancel",
     "others": "Others",
     "delete": "Delete Application",

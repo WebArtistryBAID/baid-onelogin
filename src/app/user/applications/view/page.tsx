@@ -1,7 +1,7 @@
 'use client'
 
 import {redirect} from 'next/navigation'
-import {getMyAppByIDSecure, refreshAppSecret} from '@/app/lib/appActions'
+import {getMyAppByIDSecure, refreshAppSecret, updateApp} from '@/app/lib/appActions'
 import {AppIcon} from '@/app/user/applications/AppIcon'
 import {getUserNameByID} from '@/app/lib/userActions'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -9,7 +9,7 @@ import {faCopy} from '@fortawesome/free-regular-svg-icons'
 import {useTranslationClient} from '@/app/i18n/client'
 import {useEffect, useState} from 'react'
 import {$Enums, Application} from '@prisma/client'
-import {faClose, faRefresh} from '@fortawesome/free-solid-svg-icons'
+import {faClose, faRefresh, faWarning} from '@fortawesome/free-solid-svg-icons'
 import Scope = $Enums.Scope
 
 export default function ApplicationView({searchParams}: { searchParams: never }) {
@@ -20,12 +20,17 @@ export default function ApplicationView({searchParams}: { searchParams: never })
     const [ownerName, setOwnerName] = useState('')
     const [secret, setSecret] = useState<string | null>('secret' in searchParams ? searchParams['secret'] : null)
 
+    const [positioning, setPositioning] = useState(0)
+
     const [message, setMessage] = useState('')
     const [terms, setTerms] = useState('')
     const [privacy, setPrivacy] = useState('')
     const [redirectURIs, setRedirectURIs] = useState<string[]>([])
     const [redirectURI, setRedirectURI] = useState('')
     const [scopes, setScopes] = useState<string[]>([])
+
+    const [unsaved, setUnsaved] = useState(false)
+    const [saveLoading, setSaveLoading] = useState(false)
 
     if (!('app' in searchParams)) {
         redirect('/user/applications')
@@ -60,8 +65,39 @@ export default function ApplicationView({searchParams}: { searchParams: never })
         </div>
     }
 
-    return <div className="h-full overflow-y-auto">
+    return <div className="h-full overflow-y-auto relative" style={{transform: 'translateZ(0)'}}
+                onScroll={(e) => setPositioning(e.currentTarget.scrollTop)}>
         <h1 className="mb-5">{t('view.title')}</h1>
+
+        <div
+            className={`absolute bottom-0 z-20 w-full transition-opacity duration-100 ${unsaved ? 'opacity-100' : 'opacity-0'}`}
+            style={{transform: `translateY(${positioning}px)`}}>
+            <div className="w-full flex items-center rounded-full bg-secondary shadow-lg pl-3">
+                <FontAwesomeIcon icon={faWarning} className="flex-shrink mr-3"/>
+                <p className="flex-grow py-3">{app.approved ? t('view.changesApproved') : t('view.changes')}</p>
+                <button onClick={() => location.reload()}
+                        className="btn-secondary flex-shrink">{t('view.cancel')}</button>
+                <button disabled={saveLoading} onClick={async () => {
+                    setSaveLoading(true)
+                    const a = await updateApp({
+                        message,
+                        terms,
+                        privacy,
+                        redirectUrls: redirectURIs,
+                        scopes: scopes.map(s => Scope[s as keyof typeof Scope])
+                    })
+                    setMessage(a.message)
+                    setTerms(a.terms ?? '')
+                    setPrivacy(a.privacy ?? '')
+                    setRedirectURIs(a.redirectUrls)
+                    setRedirectURI('')
+                    setScopes(a.scopes)
+                    setApp(a)
+                    setUnsaved(false)
+                    setSaveLoading(false)
+                }} className="btn flex-shrink">{t(saveLoading ? 'view.saving' : 'view.save')}</button>
+            </div>
+        </div>
 
         <div
             className="flex flex-col lg:flex-row w-full lg:justify-start lg:text-left text-center justify-center items-center mb-5">
@@ -127,16 +163,25 @@ export default function ApplicationView({searchParams}: { searchParams: never })
 
         <p className="text-sm secondary mb-1">{t('view.message')}</p>
         <input className="text mb-1 w-full" placeholder={t('view.message')} type="text"
-               onChange={(e) => setMessage(e.currentTarget.value)} value={message}/>
+               onChange={(e) => {
+                   setMessage(e.currentTarget.value)
+                   setUnsaved(true)
+               }} value={message}/>
         <p className="text-xs secondary mb-3">{t('view.messageInfo')}</p>
 
         <p className="text-sm secondary mb-1">{t('view.terms')}</p>
         <input className="text mb-3 w-full" placeholder={t('view.terms')} type="text"
-               onChange={(e) => setTerms(e.currentTarget.value)} value={terms}/>
+               onChange={(e) => {
+                   setTerms(e.currentTarget.value)
+                   setUnsaved(true)
+               }} value={terms}/>
 
         <p className="text-sm secondary mb-1">{t('view.privacy')}</p>
         <input className="text mb-3 w-full" placeholder={t('view.privacy')} type="text"
-               onChange={(e) => setPrivacy(e.currentTarget.value)} value={privacy}/>
+               onChange={(e) => {
+                   setPrivacy(e.currentTarget.value)
+                   setUnsaved(true)
+               }} value={privacy}/>
 
         <p className="text-sm secondary mb-1">{t('view.redirect')}</p>
         {redirectURIs.map((url, i) =>
@@ -145,6 +190,7 @@ export default function ApplicationView({searchParams}: { searchParams: never })
 
                 <button onClick={() => {
                     setRedirectURIs(redirectURIs.filter((_, j) => j !== i))
+                    setUnsaved(true)
                 }}
                         className="absolute right-3 top-2 icon-btn h-8 w-8">
                     <FontAwesomeIcon icon={faClose} aria-label={t('view.deleteRedirect')}/>
@@ -161,6 +207,7 @@ export default function ApplicationView({searchParams}: { searchParams: never })
                 }
                 setRedirectURIs([...redirectURIs, redirectURI])
                 setRedirectURI('')
+                setUnsaved(true)
             }}>{t('view.addRedirect')}</button>
         </div>
 
@@ -170,8 +217,10 @@ export default function ApplicationView({searchParams}: { searchParams: never })
                 <input type="checkbox" className="mr-3" id={scope} onChange={(e) => {
                     if (e.currentTarget.checked) {
                         setScopes([...scopes, scope])
+                        setUnsaved(true)
                     } else {
                         setScopes(scopes.filter(s => s !== scope))
+                        setUnsaved(true)
                     }
                 }} checked={scopes.includes(scope)}/>
                 <label htmlFor={scope}>{scope}</label>

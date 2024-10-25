@@ -41,6 +41,7 @@
     "auditLogs": "审计日志",
     "viewAuditLogs": "查看审计日志",
     "save": "保存",
+    "saving": "保存中...",
     "cancel": "取消",
     "others": "其他",
     "delete": "删除程序",

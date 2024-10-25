@@ -30,7 +30,7 @@ export default async function Applications() {
             <p>{app.name}</p>
         </Link>)}
 
-        <div className="sticky bottom-0 w-full flex justify-end">
+        <div className="sticky bottom-0 w-full flex justify-end mt-3">
             <Link href="/user/applications/create" className="btn">{t('create.text')}</Link>
         </div>
     </div>
