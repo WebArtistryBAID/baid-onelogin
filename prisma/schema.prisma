@@ -21,11 +21,11 @@ model User {
   name          String
   pinyin        String
   phone         String?
-  avatar String
   adminClass0   String?
   classTeacher0 String?
   gender        Gender
   lastUserAgent String
+  admin Boolean @default(false)
   type          UserType
   logs          UserAuditLog[]
   appLogs       AppAuditLog[]
@@ -36,7 +36,7 @@ model User {
 model Application {
   id           Int            @id @default(autoincrement())
   name         String
-  icon         String
+  icon     String?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   redirectUrls String[]
@@ -47,16 +47,23 @@ model Application {
   ownerId      Int
   message      String
   approved     Boolean
-  terms        String
-  privacy      String
+  terms    String?
+  privacy  String?
   logs         AppAuditLog[]
   auths        Authorization[]
+  approval ApprovalRequest[]
 }
 
 model Authorization {
   id   Int  @id @default(autoincrement())
   user User @relation(fields: [userId], references: [seiueId])
   userId        Int
+  application   Application @relation(fields: [applicationId], references: [id])
+  applicationId Int
+}
+
+model ApprovalRequest {
+  id            Int         @id @default(autoincrement())
   application   Application @relation(fields: [applicationId], references: [id])
   applicationId Int
 }
@@ -96,7 +103,7 @@ enum UserAuditLogType {
 enum AppAuditLogType {
   created
   updated
-  authorizedUser
+  authorizedUser // [authorized user id, scope 1, scope 2, ...]
   approved
   disapproved
 }
@@ -104,6 +111,7 @@ enum AppAuditLogType {
 enum Scope {
   basic
   calendar
+  sms
 }
 
 enum Gender {

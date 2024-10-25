@@ -13,6 +13,14 @@ export async function getMe(): Promise<User> {
     }))!
 }
 
+export async function getUserNameByID(id: number): Promise<string> {
+    return (await prisma.user.findUnique({
+        where: {
+            seiueId: id
+        }
+    }))!.name
+}
+
 export async function getMyAuths(): Promise<Authorization[]> {
     return (await prisma.authorization.findMany({
         where: {
@@ -27,4 +35,15 @@ export async function getMyApps(): Promise<Application[]> {
             ownerId: await findUserOrThrow()
         }
     }))
+}
+
+export async function getMyAppsSecure(): Promise<Application[]> {
+    return (await prisma.application.findMany({
+        where: {
+            ownerId: await findUserOrThrow()
+        }
+    })).map(app => {
+        app.clientSecret = ''
+        return app
+    })
 }

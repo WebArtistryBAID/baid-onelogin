@@ -1,6 +1,6 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCode, faHome, faTicket } from '@fortawesome/free-solid-svg-icons'
-import { useTranslation } from '@/app/i18n'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCode, faHome, faTicket} from '@fortawesome/free-solid-svg-icons'
+import {useTranslation} from '@/app/i18n'
 import Link from 'next/link'
 
 export default async function UserLayout({
@@ -24,7 +24,7 @@ export default async function UserLayout({
                 </div>
                 <p className="nav-content">{t('nav.authorizations')}</p>
             </Link>
-            <p className="text-xs text-center mt-5 mb-2 text-gray-600 dark:text-gray-400 lg:block hidden">{t('nav.developers')}</p>
+            <p className="text-xs text-center mt-5 mb-2 secondary lg:block hidden">{t('nav.developers')}</p>
             <Link href="/user/applications" className="nav-item">
                 <div className="nav-image">
                     <FontAwesomeIcon icon={faCode} aria-label={t('nav.applications')}/>

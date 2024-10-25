@@ -1,0 +1,30 @@
+import {useTranslation} from '@/app/i18n'
+import Link from 'next/link'
+import {createApp} from '@/app/lib/appActions'
+import {redirect} from 'next/navigation'
+
+export default async function ApplicationCreate() {
+    const {t} = await useTranslation('applications')
+
+    return (
+        <div>
+            <h1 className="mb-3">{t('create.title')}</h1>
+            <p className="text-sm mb-3">{t('create.responsibility')}</p>
+
+            <p className="mb-1 text-sm secondary">{t('create.nameInput')}</p>
+            <form action={async (data) => {
+                'use server'
+                const app = await createApp(data)
+                redirect(`/user/applications/view?app=${app.id}&secret=${app.clientSecret}`)
+            }}>
+                <input type="text" name="name" minLength={2} maxLength={16} className="text mb-3"
+                       placeholder={t('create.nameInput')}/>
+
+                <div className="flex">
+                    <button type="submit" className="btn mr-3">{t('create.create')}</button>
+                    <Link href="/user/applications" className="btn-secondary">{t('create.cancel')}</Link>
+                </div>
+            </form>
+        </div>
+    )
+}

@@ -21,7 +21,7 @@ export default async function Home() {
             </div>
         </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400">{t('userInfo')}</p>
+        <p className="text-sm secondary">{t('userInfo')}</p>
         <table className="w-full">
             <tbody>
             <tr className="w-full">

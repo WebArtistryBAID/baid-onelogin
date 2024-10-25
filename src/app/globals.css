@@ -34,8 +34,36 @@ h1 {
   @apply w-8 h-8 text-white flex justify-center items-center rounded-full bg-blue-500 flex-shrink mr-3;
 }
 
+.icon-btn {
+  @apply flex justify-center items-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-100 p-1;
+}
+
+.btn {
+  @apply font-bold bg-blue-500 hover:bg-blue-600 transition-colors duration-100 text-white py-2 px-4 rounded-full;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-100 dark:text-white py-2 px-4 rounded-full;
+}
+
+.btn-danger {
+  @apply font-bold bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white py-2 px-4 rounded-full;
+}
+
 .nav-content {
   @apply flex-grow text-sm hidden lg:block;
+}
+
+.secondary {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.bg-secondary {
+  @apply bg-gray-200 dark:bg-gray-700
+}
+
+input.text {
+  @apply bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-2 appearance-none;
 }
 
 @layer utilities {

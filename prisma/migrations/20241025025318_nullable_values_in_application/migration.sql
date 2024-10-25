@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "Application" ALTER COLUMN "icon" DROP NOT NULL,
+ALTER COLUMN "terms" DROP NOT NULL,
+ALTER COLUMN "privacy" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "adminClass0" DROP NOT NULL,
+ALTER COLUMN "classTeacher0" DROP NOT NULL;
