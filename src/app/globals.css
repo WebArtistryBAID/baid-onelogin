@@ -15,7 +15,7 @@ h1 {
 }
 
 .base-nav {
-  @apply backdrop-blur-3xl backdrop-filter bg-gray-50/50 dark:bg-slate-700/40 lg:block flex flex-shrink lg:h-full items-center p-3 lg:p-5 rounded-3xl lg:rounded-none
+  @apply backdrop-blur-3xl backdrop-filter bg-gray-50/50 dark:bg-slate-700/40 lg:block flex flex-shrink lg:h-full items-center p-3 lg:p-5
 }
 
 .base-content {

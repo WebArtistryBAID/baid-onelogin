@@ -22,8 +22,8 @@ model User {
   pinyin        String
   phone         String?
   avatar String
-  adminClass0   String
-  classTeacher0 String
+  adminClass0   String?
+  classTeacher0 String?
   gender        Gender
   lastUserAgent String
   type          UserType

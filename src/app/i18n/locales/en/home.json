@@ -6,5 +6,21 @@
     "authorizations": "Authorizations",
     "organizations": "Organizations"
   },
-  "welcome": "Welcome"
+  "welcome": "OneLogin",
+  "intro": "OneLogin is a streamlined authentication platform for BAID services.",
+  "userInfo": "User Information",
+  "seiueId": "SEIUE User ID",
+  "schoolId": "School ID",
+  "phone": "Phone Number",
+  "none": "None",
+  "notApplicable": "N/A",
+  "adminClass0": "Administrative Class",
+  "classTeacher0": "Teacher",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "others": "Others",
+  "type": "User Type",
+  "student": "Student",
+  "teacher": "Teacher"
 }
