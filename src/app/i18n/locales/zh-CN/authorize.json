@@ -1,0 +1,15 @@
+{
+  "oneLogin": "BAID.OneLogin",
+  "oneLoginSecondary": "One Login, All of BAID",
+  "message": "您是否要授权 {{name}} 访问您的账号？",
+  "scopeMessages": {
+    "basic": "此应用将访问您的个人资料信息。",
+    "phone": "此应用将访问您的手机号码。",
+    "calendar": "此应用将访问您的日历。",
+    "sms": "此应用将向您发送短信通知。",
+    "noPassword": "此应用程序<1>无法</1>访问您的密码。"
+  },
+  "appInfo": "{{name}} 的管理员为 {{owner}}，且并不隶属于 OneLogin 或希悦。在继续之前，您应该查看 {{name}} 的 <1>服务条款</1> 和 <2>隐私条款</2>。",
+  "approve": "授权",
+  "cancel": "取消"
+}

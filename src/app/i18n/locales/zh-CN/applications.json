@@ -26,12 +26,14 @@
     "pending": "待审批",
     "requestApproval": "申请审批",
     "approvalInfo": "您的应用必须经过审批后，除您之外的用户才能授权。",
-    "approvalTerms": "您必须在申请审批前添加 条款与条件 链接。",
+    "approvalTerms": "您必须在申请审批前添加 服务条款 链接。",
     "approvalPrivacy": "您必须在申请审批前添加 隐私条款 链接。",
     "approvalMessage": "您必须在申请审批前添加 授权消息。",
     "authorization": "授权",
     "viewAuthorizations": "查看已授权用户",
     "redirect": "Redirect URIs",
+    "terms": "服务条款链接",
+    "privacy": "隐私条款链接",
     "scopes": "Scopes",
     "scopesInfo": "您只能在授权时请求这些 Scopes。",
     "changes": "您的更改尚未保存。",
@@ -43,6 +45,9 @@
     "others": "其他",
     "delete": "删除程序",
     "deleteConfirm": "您确定要删除此应用吗？",
-    "confirm": "确认"
+    "confirm": "确认",
+    "addRedirect": "添加",
+    "addRedirectPlaceholder": "Redirect URI",
+    "deleteRedirect": "删除"
   }
 }

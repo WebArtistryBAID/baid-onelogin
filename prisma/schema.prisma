@@ -110,6 +110,7 @@ enum AppAuditLogType {
 
 enum Scope {
   basic
+  phone
   calendar
   sms
 }

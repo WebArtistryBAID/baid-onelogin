@@ -8,8 +8,9 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCopy} from '@fortawesome/free-regular-svg-icons'
 import {useTranslationClient} from '@/app/i18n/client'
 import {useEffect, useState} from 'react'
-import {Application} from '@prisma/client'
-import {faRefresh} from '@fortawesome/free-solid-svg-icons'
+import {$Enums, Application} from '@prisma/client'
+import {faClose, faRefresh} from '@fortawesome/free-solid-svg-icons'
+import Scope = $Enums.Scope
 
 export default function ApplicationView({searchParams}: { searchParams: never }) {
     const {t} = useTranslationClient('applications')
@@ -20,6 +21,11 @@ export default function ApplicationView({searchParams}: { searchParams: never })
     const [secret, setSecret] = useState<string | null>('secret' in searchParams ? searchParams['secret'] : null)
 
     const [message, setMessage] = useState('')
+    const [terms, setTerms] = useState('')
+    const [privacy, setPrivacy] = useState('')
+    const [redirectURIs, setRedirectURIs] = useState<string[]>([])
+    const [redirectURI, setRedirectURI] = useState('')
+    const [scopes, setScopes] = useState<string[]>([])
 
     if (!('app' in searchParams)) {
         redirect('/user/applications')
@@ -34,6 +40,10 @@ export default function ApplicationView({searchParams}: { searchParams: never })
             }
             getUserNameByID(a.ownerId).then(setOwnerName)
             setMessage(a.message)
+            setTerms(a.terms ?? '')
+            setPrivacy(a.privacy ?? '')
+            setRedirectURIs(a.redirectUrls)
+            setScopes(a.scopes)
             setApp(a!)
         })()
     }, [searchParams])
@@ -68,10 +78,10 @@ export default function ApplicationView({searchParams}: { searchParams: never })
         <p className="text-xl mb-3">{ownerName}</p>
 
         <p className="text-sm secondary">{t('view.approval')}</p>
-        <p className="text-xl mb-1">{app.approved ?
+        <p className={`text-xl ${app.approved ? 'mb-3' : 'mb-1'}`}>{app.approved ?
             <span className="text-green-500">{t('view.approved')}</span> : t('view.pending')}</p>
         {!app.approved ? <button className="btn mb-1">{t('view.requestApproval')}</button> : null}
-        <p className="text-xs secondary mb-3">{t('view.approvalInfo')}</p>
+        {!app.approved ? <p className="text-xs secondary mb-3">{t('view.approvalInfo')}</p> : null}
 
         <p className="text-sm secondary mb-1">{t('view.clientId')}</p>
         <pre className="rounded-3xl bg-secondary p-3 mb-3 relative w-full overflow-x-auto">
@@ -120,6 +130,54 @@ export default function ApplicationView({searchParams}: { searchParams: never })
                onChange={(e) => setMessage(e.currentTarget.value)} value={message}/>
         <p className="text-xs secondary mb-3">{t('view.messageInfo')}</p>
 
+        <p className="text-sm secondary mb-1">{t('view.terms')}</p>
+        <input className="text mb-3 w-full" placeholder={t('view.terms')} type="text"
+               onChange={(e) => setTerms(e.currentTarget.value)} value={terms}/>
+
+        <p className="text-sm secondary mb-1">{t('view.privacy')}</p>
+        <input className="text mb-3 w-full" placeholder={t('view.privacy')} type="text"
+               onChange={(e) => setPrivacy(e.currentTarget.value)} value={privacy}/>
+
+        <p className="text-sm secondary mb-1">{t('view.redirect')}</p>
+        {redirectURIs.map((url, i) =>
+            <pre key={i} className="rounded-3xl bg-secondary p-3 mb-1 relative w-full overflow-x-auto">
+                {url}
+
+                <button onClick={() => {
+                    setRedirectURIs(redirectURIs.filter((_, j) => j !== i))
+                }}
+                        className="absolute right-3 top-2 icon-btn h-8 w-8">
+                    <FontAwesomeIcon icon={faClose} aria-label={t('view.deleteRedirect')}/>
+                </button>
+            </pre>)}
+        <div className="flex mb-3 items-center">
+            <input className="text mr-3 flex-grow" type="text" onChange={e => setRedirectURI(e.currentTarget.value)}
+                   placeholder={t('view.addRedirectPlaceholder')} value={redirectURI}/>
+            <button className="btn flex-shrink" onClick={() => {
+                try {
+                    new URL(redirectURI)
+                } catch {
+                    return
+                }
+                setRedirectURIs([...redirectURIs, redirectURI])
+                setRedirectURI('')
+            }}>{t('view.addRedirect')}</button>
+        </div>
+
+        <p className="text-sm secondary mb-1">{t('view.scopes')}</p>
+        <div className="mb-1">
+            {Object.keys(Scope).map((scope, i) => <div className="flex items-center" key={i}>
+                <input type="checkbox" className="mr-3" id={scope} onChange={(e) => {
+                    if (e.currentTarget.checked) {
+                        setScopes([...scopes, scope])
+                    } else {
+                        setScopes(scopes.filter(s => s !== scope))
+                    }
+                }} checked={scopes.includes(scope)}/>
+                <label htmlFor={scope}>{scope}</label>
+            </div>)}
+        </div>
+        <p className="text-xs secondary mb-3">{t('view.scopesInfo')}</p>
 
         <p className="text-sm secondary mb-1">{t('view.authorization')}</p>
         <button className="btn mb-3">{t('view.viewAuthorizations')}</button>

@@ -32,6 +32,8 @@
     "authorization": "Authorizations",
     "viewAuthorizations": "View Authorizations",
     "redirect": "Redirect URIs",
+    "terms": "Terms of Service Link",
+    "privacy": "Privacy Policy Link",
     "scopes": "Scopes",
     "scopesInfo": "You will only be able to request these scopes when authorizing.",
     "changes": "Your changes are not saved yet.",
@@ -43,6 +45,9 @@
     "others": "Others",
     "delete": "Delete Application",
     "deleteConfirm": "Are you sure you want to delete this application?",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "addRedirect": "Add",
+    "addRedirectPlaceholder": "Redirect URI",
+    "deleteRedirect": "Delete"
   }
 }
