@@ -12,6 +12,8 @@
   "seiueId": "希悦用户 ID",
   "schoolId": "学工号",
   "phone": "手机号码",
+  "none": "无",
+  "notApplicable": "不适用",
   "adminClass0": "行政班",
   "classTeacher0": "行政班教师",
   "gender": "性别",
