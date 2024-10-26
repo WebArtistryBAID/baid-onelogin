@@ -1,14 +1,13 @@
 'use client'
 
-import {Application} from '@prisma/client'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faUpload} from '@fortawesome/free-solid-svg-icons'
-import {useRef} from 'react'
-import {useTranslationClient} from '@/app/i18n/client'
-import {uploadAppIcon} from '@/app/lib/appActions'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUpload } from '@fortawesome/free-solid-svg-icons'
+import { useRef } from 'react'
+import { useTranslationClient } from '@/app/i18n/client'
+import { ApplicationSimple, uploadAppIcon } from '@/app/lib/app-actions'
 
 export function AppIcon({app, size, uploadable = false}: {
-    app: Application,
+    app: ApplicationSimple,
     size: 'small' | 'big',
     uploadable: boolean
 }) {

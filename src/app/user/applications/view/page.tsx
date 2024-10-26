@@ -9,9 +9,9 @@ import {
     refreshAppSecret,
     setAppApprovalStatus,
     updateApp
-} from '@/app/lib/appActions'
+} from '@/app/lib/app-actions'
 import { AppIcon } from '@/app/user/applications/AppIcon'
-import { getMe, getUserNameByID } from '@/app/lib/userActions'
+import { getMe, getUserNameByID } from '@/app/lib/user-actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { useTranslationClient } from '@/app/i18n/client'

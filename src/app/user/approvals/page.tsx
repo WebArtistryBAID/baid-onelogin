@@ -1,5 +1,5 @@
 import { useTranslation } from '@/app/i18n'
-import { getApprovalRequests, getMyAppByID } from '@/app/lib/appActions'
+import { getApprovalRequests, getMyAppByID } from '@/app/lib/app-actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHourglassEmpty } from '@fortawesome/free-solid-svg-icons'
 import { AppIcon } from '@/app/user/applications/AppIcon'

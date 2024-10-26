@@ -1,7 +1,7 @@
-import {useTranslation} from '@/app/i18n'
+import { useTranslation } from '@/app/i18n'
 import Link from 'next/link'
-import {createApp} from '@/app/lib/appActions'
-import {redirect} from 'next/navigation'
+import { createApp } from '@/app/lib/app-actions'
+import { redirect } from 'next/navigation'
 
 export default async function ApplicationCreate() {
     const {t} = await useTranslation('applications')

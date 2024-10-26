@@ -6,16 +6,47 @@ import { findUserOrThrow } from '@/app/lib/utils'
 import path from 'node:path'
 import sharp from 'sharp'
 import fsPromise from 'node:fs/promises'
-import { getMe } from '@/app/lib/userActions'
+import { getMe } from '@/app/lib/user-actions'
 
 const prisma = new PrismaClient()
 
-export async function getAppByClientID(clientID: string): Promise<Application | null> {
+export interface ApplicationSimple {
+    id: number
+    name: string
+    icon: string | null
+    redirectUrls: string[]
+    scopes: string[]
+    clientId: string
+    ownerId: number
+    message: string
+    approved: ApprovalStatus
+    terms: string | null
+    privacy: string | null
+}
+
+export async function getAppByClientID(clientID: string): Promise<ApplicationSimple | null> {
     return prisma.application.findFirst({
         where: {
             clientId: clientID
         }
     })
+}
+
+export async function getAppByID(id: number): Promise<ApplicationSimple | null> {
+    return prisma.application.findFirst({
+        where: {
+            id
+        }
+    })
+}
+
+export async function verifyAppSecretByID(id: number, secret: string): Promise<boolean> {
+    const app = await prisma.application.findFirst({
+        where: {
+            id
+        }
+    })
+    return app != null && app.clientSecret === secret
 }
 
 export async function createApp(formData: FormData): Promise<Application> {

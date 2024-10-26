@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCode, faHome, faStamp, faTicket } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from '@/app/i18n'
 import Link from 'next/link'
-import { getMe } from '@/app/lib/userActions'
+import { getMe } from '@/app/lib/user-actions'
 import If from '@/app/lib/If'
 
 export default async function UserLayout({

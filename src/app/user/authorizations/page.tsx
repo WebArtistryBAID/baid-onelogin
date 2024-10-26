@@ -1,7 +1,7 @@
-import {useTranslation} from '@/app/i18n'
-import {getMyAuths} from '@/app/lib/userActions'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faHourglassEmpty} from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from '@/app/i18n'
+import { getMyAuths } from '@/app/lib/user-actions'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHourglassEmpty } from '@fortawesome/free-solid-svg-icons'
 
 export default async function Authorizations() {
     const { t } = await useTranslation('authorizations')

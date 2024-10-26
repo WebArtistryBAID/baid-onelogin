@@ -1,7 +1,7 @@
 'use server'
 
-import {Application, Authorization, PrismaClient, User} from '@prisma/client'
-import {findUserOrThrow} from '@/app/lib/utils'
+import { Application, Authorization, PrismaClient, User } from '@prisma/client'
+import { findUserOrThrow } from '@/app/lib/utils'
 
 const prisma = new PrismaClient()
 
