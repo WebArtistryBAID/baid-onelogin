@@ -10,6 +10,14 @@ import { getMe } from '@/app/lib/userActions'
 
 const prisma = new PrismaClient()
 
+export async function getAppByClientID(clientID: string): Promise<Application | null> {
+    return prisma.application.findFirst({
+        where: {
+            clientId: clientID
+        }
+    })
+}
+
 export async function createApp(formData: FormData): Promise<Application> {
     const user = await findUserOrThrow()
     const app = await prisma.application.create({

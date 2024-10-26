@@ -1,9 +1,15 @@
-import {NextRequest, NextResponse} from 'next/server'
-import {cookies} from 'next/headers'
-import {jwtVerify} from 'jose'
+import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { jwtVerify } from 'jose'
 
 const protectedRoutes = [
-    '/'
+    '/',
+    '/user',
+    '/user/applications',
+    '/user/applications/create',
+    '/user/applications/view',
+    '/approvals',
+    '/authorizations'
 ]
 
 export default async function authMiddleware(req: NextRequest): Promise<NextResponse | null> {

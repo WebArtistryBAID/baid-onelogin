@@ -1,7 +1,8 @@
 {
   "oneLogin": "BAID.OneLogin",
   "oneLoginSecondary": "One Login, All of BAID",
-  "message": "Do you want to authorize {{name}} to access your account?",
+  "title": "Authorization",
+  "message": "Do you want to authorize <1>{{name}}</1> to access your account?",
   "scopeMessages": {
     "basic": "This application will access your profile information.",
     "phone": "This application will access your phone number.",
@@ -9,6 +10,14 @@
     "sms": "This application will send you SMS notifications.",
     "noPassword": "This application will <1>not</1> be able to access your password."
   },
+  "error": "An error occurred",
+  "errorParameters": "We are sorry, but there is an error with your request. Invalid parameters.",
+  "errorApp": "We're sorry, but there is an error with your request. Application not found.",
+  "errorApproval": "We're sorry, but there is an error with your request. Application not approved.",
+  "errorResponseType": "We're sorry, but there is an error with your request. Flow type not supported.",
+  "errorScope": "We're sorry, but there is an error with your request. The scope you have requested are not approved.",
+  "errorRedirectURI": "We're sorry, but there is an error with your request. The redirect URI you have requested is not approved.",
+  "back": "Back",
   "appInfo": "{{name}} is owned by {{owner}} and is not affiliated with OneLogin and SEIUE. You should check {{name}}'s <1>Terms of Service</1> and <2>Privacy Policy</2> before proceeding.",
   "approve": "Authorize",
   "cancel": "Cancel"

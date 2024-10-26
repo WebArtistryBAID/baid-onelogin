@@ -1,7 +1,8 @@
 {
   "oneLogin": "BAID.OneLogin",
   "oneLoginSecondary": "One Login, All of BAID",
-  "message": "您是否要授权 {{name}} 访问您的账号？",
+  "title": "授权登录",
+  "message": "您是否要授权 <1>{{name}}</1> 访问您的账号？",
   "scopeMessages": {
     "basic": "此应用将访问您的个人资料信息。",
     "phone": "此应用将访问您的手机号码。",
@@ -9,6 +10,14 @@
     "sms": "此应用将向您发送短信通知。",
     "noPassword": "此应用程序<1>无法</1>访问您的密码。"
   },
+  "error": "错误",
+  "errorParameters": "很抱歉，您的请求出现错误。无效的参数。",
+  "errorApp": "很抱歉，您的请求出现错误。找不到应用程序。",
+  "errorApproval": "很抱歉，您的请求出现错误。应用程序未获批准。",
+  "errorResponseType": "很抱歉，您的请求出现错误。不支持的 Flow 类型。",
+  "errorScope": "很抱歉，您的请求出现错误。您请求的 Scope 未获批准。",
+  "errorRedirectURI": "很抱歉，您的请求出现错误。您请求的 Redirect URI 未获批准。",
+  "back": "返回",
   "appInfo": "{{name}} 的管理员为 {{owner}}，且并不隶属于 OneLogin 或希悦。在继续之前，您应该查看 {{name}} 的 <1>服务条款</1> 和 <2>隐私条款</2>。",
   "approve": "授权",
   "cancel": "取消"
