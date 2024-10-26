@@ -10,8 +10,7 @@ const protectedRoutes = [
     '/user/applications/view',
     '/approvals',
     '/authorizations',
-    '/oauth2/authorize',
-    '/oauth2/token'
+    '/oauth2/authorize'
 ]
 
 export default async function authMiddleware(req: NextRequest): Promise<NextResponse | null> {
