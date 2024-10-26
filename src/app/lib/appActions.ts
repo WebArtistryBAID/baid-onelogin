@@ -1,12 +1,12 @@
 'use server'
 
-import {Application, PrismaClient} from '@prisma/client'
-import {randomBytes, randomUUID} from 'node:crypto'
-import {findUserOrThrow} from '@/app/lib/utils'
+import { Application, ApprovalRequest, ApprovalStatus, PrismaClient } from '@prisma/client'
+import { randomBytes, randomUUID } from 'node:crypto'
+import { findUserOrThrow } from '@/app/lib/utils'
 import path from 'node:path'
 import sharp from 'sharp'
 import fsPromise from 'node:fs/promises'
-import {getMe} from '@/app/lib/userActions'
+import { getMe } from '@/app/lib/userActions'
 
 const prisma = new PrismaClient()
 
@@ -26,7 +26,7 @@ export async function createApp(formData: FormData): Promise<Application> {
                 }
             },
             message: '',
-            approved: false,
+            approved: ApprovalStatus.pending,
             terms: null,
             privacy: null
         }
@@ -109,6 +109,48 @@ export async function getMyAppByID(id: number): Promise<Application | null> {
     })
 }
 
+export async function getApprovalRequests(): Promise<ApprovalRequest[]> {
+    const user = await getMe()
+    if (!user.admin) {
+        throw new Error('You do not have permission to view approval requests')
+    }
+    return prisma.approvalRequest.findMany()
+}
+
+export async function getApprovalRequestForApp(id: number): Promise<ApprovalRequest | null> {
+    const app = getMyAppByID(id)
+    if (app == null) {
+        throw new Error('Application not found')
+    }
+    return prisma.approvalRequest.findFirst({
+        where: {
+            applicationId: id
+        }
+    })
+}
+
+export async function createApprovalRequest(id: number): Promise<ApprovalRequest> {
+    const app = await getMyAppByID(id)
+    if (app == null || app.ownerId !== (await getMe()).seiueId) {
+        throw new Error('Application not found')
+    }
+    if (app.approved !== ApprovalStatus.pending || app.terms == null || app.privacy == null || app.terms.length < 1 || app.privacy.length < 1 || app.message.length < 1) {
+        throw new Error('Incorrect application status')
+    }
+    if ((await getApprovalRequestForApp(id)) != null) {
+        throw new Error('Approval request already exists')
+    }
+    return prisma.approvalRequest.create({
+        data: {
+            application: {
+                connect: {
+                    id
+                }
+            }
+        }
+    })
+}
+
 export async function updateApp(data: Partial<Application>): Promise<Application> {
     const user = await getMe()
     const app = await prisma.application.findFirst({
@@ -139,9 +181,7 @@ export async function updateApp(data: Partial<Application>): Promise<Application
         data.createdAt != null || data.updatedAt != null || data.ownerId != null || data.name != null) {
         throw new Error('Invalid update for certain fields')
     }
-    if (!user.admin) {
-        data.approved = false // Require re-approval when updating app
-    }
+    data.approved = ApprovalStatus.pending // Require re-approval when updating app
     return prisma.application.update({
         where: {
             id: app.id
@@ -150,7 +190,7 @@ export async function updateApp(data: Partial<Application>): Promise<Application
     })
 }
 
-export async function setAppApprovalStatus(id: number, approved: boolean): Promise<Application> {
+export async function setAppApprovalStatus(id: number, approved: ApprovalStatus): Promise<Application> {
     const user = await getMe()
     if (!user.admin) {
         throw new Error('You do not have permission to approve applications')
@@ -176,6 +216,11 @@ export async function setAppApprovalStatus(id: number, approved: boolean): Promi
                     seiueId: user.seiueId
                 }
             }
+        }
+    })
+    await prisma.approvalRequest.deleteMany({
+        where: {
+            applicationId: app.id
         }
     })
     return prisma.application.update({

@@ -24,6 +24,9 @@
     "approval": "Approval Status",
     "approved": "Approved",
     "pending": "Pending",
+    "requested": "Requested",
+    "rejected": "Rejected",
+    "requesting": "Requesting...",
     "requestApproval": "Request Approval",
     "approvalInfo": "Your application must be approved before users other than you can authorize.",
     "approvalTerms": "You must add a link to your terms of service before requesting approval.",
@@ -49,7 +52,7 @@
     "confirm": "Confirm",
     "deleting": "Deleting...",
     "approve": "Approve",
-    "removeApprove": "Remove Approval",
+    "reject": "Reject",
     "addRedirect": "Add",
     "addRedirectPlaceholder": "Redirect URI",
     "deleteRedirect": "Delete"

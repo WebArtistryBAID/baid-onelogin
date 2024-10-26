@@ -1,38 +1,50 @@
 'use client'
 
-import {redirect} from 'next/navigation'
-import {deleteApp, getMyAppByIDSecure, refreshAppSecret, setAppApprovalStatus, updateApp} from '@/app/lib/appActions'
-import {AppIcon} from '@/app/user/applications/AppIcon'
-import {getMe, getUserNameByID} from '@/app/lib/userActions'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCopy} from '@fortawesome/free-regular-svg-icons'
-import {useTranslationClient} from '@/app/i18n/client'
-import {useEffect, useState} from 'react'
-import {$Enums, Application, User} from '@prisma/client'
-import {faClose, faRefresh, faWarning} from '@fortawesome/free-solid-svg-icons'
+import { redirect } from 'next/navigation'
+import {
+    createApprovalRequest,
+    deleteApp,
+    getApprovalRequestForApp,
+    getMyAppByIDSecure,
+    refreshAppSecret,
+    setAppApprovalStatus,
+    updateApp
+} from '@/app/lib/appActions'
+import { AppIcon } from '@/app/user/applications/AppIcon'
+import { getMe, getUserNameByID } from '@/app/lib/userActions'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopy } from '@fortawesome/free-regular-svg-icons'
+import { useTranslationClient } from '@/app/i18n/client'
+import { useEffect, useState } from 'react'
+import { $Enums, Application, ApprovalRequest, ApprovalStatus, User } from '@prisma/client'
+import { faClose, faRefresh, faWarning } from '@fortawesome/free-solid-svg-icons'
+import If from '@/app/lib/If'
 import Scope = $Enums.Scope
 
-export default function ApplicationView({searchParams}: { searchParams: never }) {
-    const {t} = useTranslationClient('applications')
-    const [me, setMe] = useState<User | null>(null)
+export default function ApplicationView({ searchParams }: { searchParams: never }) {
+    const { t } = useTranslationClient('applications')
+    const [ me, setMe ] = useState<User | null>(null)
 
-    const [copiedHighlight, setCopiedHighlight] = useState(false)
-    const [copiedHighlightSecret, setCopiedHighlightSecret] = useState(false)
-    const [app, setApp] = useState<Application | null>(null)
-    const [ownerName, setOwnerName] = useState('')
-    const [secret, setSecret] = useState<string | null>('secret' in searchParams ? searchParams['secret'] : null)
+    const [ copiedHighlight, setCopiedHighlight ] = useState(false)
+    const [ copiedHighlightSecret, setCopiedHighlightSecret ] = useState(false)
+    const [ app, setApp ] = useState<Application | null>(null)
+    const [ ownerName, setOwnerName ] = useState('')
+    const [ secret, setSecret ] = useState<string | null>('secret' in searchParams ? searchParams['secret'] : null)
 
-    const [message, setMessage] = useState('')
-    const [terms, setTerms] = useState('')
-    const [privacy, setPrivacy] = useState('')
-    const [redirectURIs, setRedirectURIs] = useState<string[]>([])
-    const [redirectURI, setRedirectURI] = useState('')
-    const [scopes, setScopes] = useState<string[]>([])
+    const [ message, setMessage ] = useState('')
+    const [ terms, setTerms ] = useState('')
+    const [ privacy, setPrivacy ] = useState('')
+    const [ redirectURIs, setRedirectURIs ] = useState<string[]>([])
+    const [ redirectURI, setRedirectURI ] = useState('')
+    const [ scopes, setScopes ] = useState<string[]>([])
 
-    const [unsaved, setUnsaved] = useState(false)
-    const [saveLoading, setSaveLoading] = useState(false)
-    const [deleteConfirm, setDeleteConfirm] = useState(false)
-    const [deleting, setDeleting] = useState(false)
+    const [ unsaved, setUnsaved ] = useState(false)
+    const [ saveLoading, setSaveLoading ] = useState(false)
+    const [ deleteConfirm, setDeleteConfirm ] = useState(false)
+    const [ deleting, setDeleting ] = useState(false)
+
+    const [ existingApprovalRequest, setEAR ] = useState<ApprovalRequest | null>(null)
+    const [ earLoading, setEARLoading ] = useState(false)
 
     if (!('app' in searchParams)) {
         redirect('/user/applications')
@@ -53,8 +65,9 @@ export default function ApplicationView({searchParams}: { searchParams: never })
             setScopes(a.scopes)
             setApp(a!)
             setMe(await getMe())
+            setEAR(await getApprovalRequestForApp(a.id))
         })()
-    }, [searchParams])
+    }, [ searchParams ])
 
     if (app == null || me == null) {
         return <div>
@@ -68,7 +81,7 @@ export default function ApplicationView({searchParams}: { searchParams: never })
         </div>
     }
 
-    return <div className="h-full overflow-y-auto relative" style={{transform: 'translateZ(0)'}}>
+    return <div className="h-full overflow-y-auto relative" style={{ transform: 'translateZ(0)' }}>
         <h1 className="mb-5">{t('view.title')}</h1>
 
         <div
@@ -86,19 +99,39 @@ export default function ApplicationView({searchParams}: { searchParams: never })
         <p className="text-xl mb-3">{ownerName}</p>
 
         <p className="text-sm secondary">{t('view.approval')}</p>
-        <p className={`text-xl ${app.approved && !me.admin ? 'mb-3' : 'mb-1'}`}>{app.approved ?
-            <span className="text-green-500">{t('view.approved')}</span> : t('view.pending')}</p>
-        {me.admin ? (!app.approved
-            ? <button className="btn mb-1" onClick={async () => {
-                await setAppApprovalStatus(app.id, true)
-                location.reload()
-            }}>{t('view.approve')}</button>
-            : <button className="btn mb-3" onClick={async () => {
-                await setAppApprovalStatus(app.id, false)
-                location.reload()
-            }}>{t('view.removeApprove')}</button>) : null}
-        {!app.approved && !me.admin ? <button className="btn mb-1">{t('view.requestApproval')}</button> : null}
-        {!app.approved ? <p className="text-xs secondary mb-3">{t('view.approvalInfo')}</p> : null}
+        <p className={`text-xl ${app.approved === ApprovalStatus.approved ? 'mb-3' : 'mb-1'}`}>{
+            app.approved === ApprovalStatus.approved ?
+                <span className="text-green-500">{t('view.approved')}</span>
+                : (
+                    app.approved === ApprovalStatus.pending
+                        ? (existingApprovalRequest == null ? t('view.pending') : t('view.requested'))
+                        : <span className="text-red-500">{t('view.rejected')}</span>
+                )
+        }</p>
+
+        <If condition={app.approved === ApprovalStatus.pending && me.seiueId === app.ownerId && existingApprovalRequest == null
+            && app.terms != null && app.terms.length > 0 && app.privacy != null && app.privacy.length > 0 && app.message.length > 0}>
+            <button onClick={async () => {
+                setEARLoading(true)
+                setEAR(await createApprovalRequest(app.id))
+                setEARLoading(false)
+            }} className="btn mb-1"
+                    disabled={earLoading}>{earLoading ? t('view.requesting') : t('view.requestApproval')}</button>
+        </If>
+        <If condition={app.approved !== ApprovalStatus.approved}>
+            <If condition={app.terms == null || app.terms.length < 1}>
+                <p className="text-xs text-red-500 mb-1">{t('view.approvalTerms')}</p>
+            </If>
+            <If condition={app.privacy == null || app.privacy.length < 1}>
+                <p className="text-xs text-red-500 mb-1">{t('view.approvalPrivacy')}</p>
+            </If>
+            <If condition={app.message.length < 1}>
+                <p className="text-xs text-red-500 mb-1">{t('view.approvalMessage')}</p>
+            </If>
+        </If>
+        <If condition={app.approved !== ApprovalStatus.approved}>
+            <p className="text-xs secondary mb-3">{t('view.approvalInfo')}</p>
+        </If>
 
         <p className="text-sm secondary mb-1">{t('view.clientId')}</p>
         <pre className="rounded-3xl bg-secondary p-3 mb-3 relative w-full overflow-x-auto">
@@ -186,7 +219,7 @@ export default function ApplicationView({searchParams}: { searchParams: never })
                 } catch {
                     return
                 }
-                setRedirectURIs([...redirectURIs, redirectURI])
+                setRedirectURIs([ ...redirectURIs, redirectURI ])
                 setRedirectURI('')
                 setUnsaved(true)
             }}>{t('view.addRedirect')}</button>
@@ -197,7 +230,7 @@ export default function ApplicationView({searchParams}: { searchParams: never })
             {Object.keys(Scope).map((scope, i) => <div className="flex items-center" key={i}>
                 <input type="checkbox" className="mr-3" id={scope} onChange={(e) => {
                     if (e.currentTarget.checked) {
-                        setScopes([...scopes, scope])
+                        setScopes([ ...scopes, scope ])
                         setUnsaved(true)
                     } else {
                         setScopes(scopes.filter(s => s !== scope))
@@ -216,6 +249,22 @@ export default function ApplicationView({searchParams}: { searchParams: never })
         <p className="text-sm secondary mb-1">{t('view.others')}</p>
         <button className="btn-danger mb-3" onClick={() => setDeleteConfirm(true)}>{t('view.delete')}</button>
 
+        <If condition={me.admin && existingApprovalRequest != null}>
+            <div
+                className={`sticky bottom-0 w-full z-30`}>
+                <div className="w-full flex items-center rounded-full bg-secondary shadow-lg">
+                    <button onClick={async () => {
+                        await setAppApprovalStatus(app.id, ApprovalStatus.rejected)
+                        location.reload()
+                    }}
+                            className="btn-danger w-1/2 mr-3">{t('view.reject')}</button>
+                    <button onClick={async () => {
+                        await setAppApprovalStatus(app.id, ApprovalStatus.approved)
+                        location.reload()
+                    }} className="btn w-1/2 ml-3">{t('view.approve')}</button>
+                </div>
+            </div>
+        </If>
 
         <div
             className={`sticky bottom-0 w-full transition-opacity duration-100 ${deleteConfirm ? 'z-30 opacity-100' : 'opacity-0'}`}>
@@ -238,7 +287,7 @@ export default function ApplicationView({searchParams}: { searchParams: never })
             className={`sticky bottom-0 w-full transition-opacity duration-100 ${unsaved ? 'z-30 opacity-100' : 'opacity-0'}`}>
             <div className="w-full flex items-center rounded-full bg-secondary shadow-lg pl-3">
                 <FontAwesomeIcon icon={faWarning} className="flex-shrink mr-3"/>
-                <p className="flex-grow py-3">{app.approved ? t('view.changesApproved') : t('view.changes')}</p>
+                <p className="flex-grow py-3">{app.approved === ApprovalStatus.approved ? t('view.changesApproved') : t('view.changes')}</p>
                 <button onClick={() => {
                     setMessage(app.message)
                     setTerms(app.terms ?? '')

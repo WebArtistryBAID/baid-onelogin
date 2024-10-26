@@ -4,7 +4,8 @@
     "applications": "Applications",
     "developers": "For Developers",
     "authorizations": "Authorizations",
-    "organizations": "Organizations"
+    "organizations": "Organizations",
+    "approval": "Approval"
   },
   "welcome": "OneLogin",
   "intro": "OneLogin is a streamlined authentication platform for BAID services.",

@@ -4,7 +4,8 @@
     "applications": "应用",
     "developers": "开发者",
     "authorizations": "已授权应用",
-    "organizations": "组织"
+    "organizations": "组织",
+    "approval": "审批"
   },
   "welcome": "OneLogin",
   "intro": "OneLogin 是统一的北京中学国际部服务验证平台。",

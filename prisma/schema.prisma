@@ -46,7 +46,7 @@ model Application {
   owner        User              @relation(fields: [ownerId], references: [seiueId])
   ownerId      Int
   message      String
-  approved     Boolean
+  approved     ApprovalStatus
   terms        String?
   privacy      String?
   logs         AppAuditLog[]
@@ -93,6 +93,12 @@ enum UserType {
   teacher
 }
 
+enum ApprovalStatus {
+  pending
+  approved
+  rejected
+}
+
 enum UserAuditLogType {
   created // [User agent, IP address]
   logIn // [User agent, IP address]
@@ -104,8 +110,6 @@ enum AppAuditLogType {
   created
   updated
   authorizedUser // [authorized user id, scope 1, scope 2, ...]
-  approved
-  disapproved
 }
 
 enum Scope {

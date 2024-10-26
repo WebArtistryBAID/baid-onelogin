@@ -24,6 +24,9 @@
     "approval": "审批状态",
     "approved": "已批准",
     "pending": "待审批",
+    "requested": "已请求",
+    "rejected": "已拒绝",
+    "requesting": "请求中...",
     "requestApproval": "申请审批",
     "approvalInfo": "您的应用必须经过审批后，除您之外的用户才能授权。",
     "approvalTerms": "您必须在申请审批前添加 服务条款 链接。",
@@ -49,7 +52,7 @@
     "confirm": "确认",
     "deleting": "删除中...",
     "approve": "批准",
-    "removeApprove": "取消批准",
+    "reject": "拒绝",
     "addRedirect": "添加",
     "addRedirectPlaceholder": "Redirect URI",
     "deleteRedirect": "删除"
