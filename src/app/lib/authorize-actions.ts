@@ -25,7 +25,10 @@ export async function authorizeForCode(application: number, scopes: Scope[], sta
     if (app.approved !== ApprovalStatus.approved && app.ownerId !== me.seiueId) {
         return null
     }
-    if (!app.scopes.every(s => scopes.includes(s))) {
+    if (!scopes.every(s => app.scopes.includes(s))) {
+        return null
+    }
+    if (!app.redirectUrls.includes(redirectURI)) {
         return null
     }
 
@@ -99,7 +102,7 @@ export async function authorizeForTokens(code: string, credentials: string, gran
     }
 
     const app = await getAppByID(jwt.payload.app as number)
-    if (app == null) {
+    if (app == null || app.approved !== ApprovalStatus.approved) {
         return {
             error: 'invalid_grant',
             error_description: 'The provided authorization code is invalid or has expired.'
@@ -244,7 +247,7 @@ export async function refreshToken(refreshToken: string, credentials: string, gr
         }
     })
 
-    if (app == null) {
+    if (app == null || app.approved !== ApprovalStatus.approved) {
         return {
             error: 'invalid_grant',
             error_description: 'The provided refresh token is invalid or has expired.'
@@ -342,6 +345,14 @@ export async function revokeToken(token: string, credentials: string): Promise<b
     if (cred[0] !== app.clientId || !(await verifyAppSecretByID(app.id!, cred[1]))) {
         return false
     }
+
+    await prisma.userAuditLog.create({
+        data: {
+            type: 'deauthorizedApp',
+            userId: jwt.payload.user as number,
+            values: [ app.id!.toString() ]
+        }
+    })
 
     await prisma.authorization.deleteMany({
         where: {
