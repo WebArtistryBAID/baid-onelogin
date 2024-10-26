@@ -1,46 +1,72 @@
-import { useTranslation } from '@/app/i18n'
+'use client'
+
 import Error from './Error'
-import { getAppByClientID } from '@/app/lib/app-actions'
-import { ApprovalStatus, Scope } from '@prisma/client'
+import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
+import { ApprovalStatus, Scope, User } from '@prisma/client'
 import { AppIcon } from '@/app/user/applications/AppIcon'
 import { getMe, getUserNameByID } from '@/app/lib/user-actions'
 import { Trans } from 'react-i18next/TransWithoutContext'
 import { authorizeForCode } from '@/app/lib/authorize-actions'
+import { useTranslationClient } from '@/app/i18n/client'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
-export default async function Authorize({ searchParams }: { searchParams: never }) {
-    const { t } = await useTranslation('authorize')
+export default function Authorize() {
+    const { t } = useTranslationClient('authorize')
 
-    if (!('client_id' in searchParams) || !('response_type' in searchParams) || !('redirect_uri' in searchParams) || !('scope' in searchParams)) {
+    const searchParams = useSearchParams()
+
+    if (!searchParams.has('client_id') || !searchParams.has('response_type') || !searchParams.has('redirect_uri') || !searchParams.has('scope')) {
         return <Error message="errorParameters"/>
     }
 
-    if (searchParams['response_type'] !== 'code') {
+    if (searchParams.get('response_type') !== 'code') {
         return <Error message="errorResponseType"/>
     }
 
-    const app = await getAppByClientID(searchParams['client_id'])
-    if (!app) {
-        return <Error message="errorApp"/>
+    const [ app, setApp ] = useState<ApplicationSimple | null | undefined>(undefined)
+    const [ appOwner, setAppOwner ] = useState<string | null>(null)
+    const [ me, setMe ] = useState<User | null | undefined>(undefined)
+
+    useEffect(() => {
+        (async () => {
+            const a = await getAppByClientID(searchParams.get('client_id')!)
+            setApp(a)
+            if (a != null) {
+                setAppOwner(await getUserNameByID(a.ownerId))
+            }
+            setMe(await getMe())
+        })()
+    })
+
+    if (app === undefined || me === undefined) {
+        return <div className="flex justify-center items-center h-full">
+            <FontAwesomeIcon icon={faSpinner} spin={true} className="secondary h-8"/>
+        </div>
     }
 
-    const me = await getMe()
+    if (app == null || me == null) {
+        return <Error message="errorApp"/>
+    }
 
     if (app.approved !== ApprovalStatus.approved && app.ownerId !== me.seiueId) {
         return <Error message="errorApproval"/>
     }
 
-    if (!app.redirectUrls.includes(searchParams['redirect_uri'])) {
+    if (!app.redirectUrls.includes(searchParams.get('redirect_uri')!)) {
         return <Error message="errorRedirectURI"/>
     }
 
-    const scopes = (searchParams['scope'] as string).split(' ')
+    const scopes = searchParams.get('scope')!.split(' ')
     for (const scope of scopes) {
         if (!app.scopes.includes(scope as keyof typeof Scope)) {
             return <Error message="errorScope"/>
         }
     }
 
-    const stateParam = 'state' in searchParams ? `&scope=searchParams['state']` : ''
+    const stateParam = searchParams.has('state') ? `&state=${searchParams.get('state')}` : ''
 
     return <div className="flex justify-center items-center flex-col p-8 h-full">
         <AppIcon uploadable={false} size="big" app={app}/>
@@ -53,7 +79,7 @@ export default async function Authorize({ searchParams }: { searchParams: never 
             <li><Trans t={t} i18nKey="scopeMessages.noPassword" components={{ 1: <b/> }}/></li>
         </ul>
         <p className="text-xs secondary mb-5">
-            <Trans t={t} i18nKey="appInfo" values={{ name: app.name, owner: await getUserNameByID(app.ownerId) }}
+            <Trans t={t} i18nKey="appInfo" values={{ name: app.name, owner: appOwner }}
                    components={{
                        1: <a className="inline" href={app.terms!}/>,
                        2: <a className="inline" href={app.privacy!}/>
@@ -61,13 +87,13 @@ export default async function Authorize({ searchParams }: { searchParams: never 
         </p>
 
         <button onClick={async () => {
-            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), 'state' in searchParams ? searchParams['state'] : null, searchParams['redirect_uri'])
+            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!)
             if (code == null) {
-                location.href = `${searchParams['redirect_uri']}?error=access_denied&error_description=The+authorization+request+failed${stateParam}`
+                location.href = `${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+authorization+request+failed${stateParam}`
             }
-            location.href = `${searchParams['redirect_uri']}?code=${code}${stateParam}`
+            location.href = `${searchParams.get('redirect_uri')}?code=${code}${stateParam}`
         }} className="btn w-full mb-3">{t('approve')}</button>
-        <a href={`${searchParams['redirect_uri']}?error=access_denied&error_description=The+user+denied+the+authorization+request${stateParam}`}
+        <a href={`${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+user+denied+the+authorization+request${stateParam}`}
            className="btn-secondary w-full text-center">{t('cancel')}</a>
     </div>
 }
