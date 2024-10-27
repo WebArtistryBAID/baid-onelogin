@@ -5,6 +5,7 @@ import { Inter, Noto_Sans_SC } from 'next/font/google'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import NextTopLoader from 'nextjs-toploader'
+import If from '@/app/lib/If'
 
 config.autoAddCss = false
 
@@ -35,6 +36,12 @@ export default function RootLayout({
             >
                 <NextTopLoader/>
                 {children}
+
+                <If condition={process.env.BOTTOM_TEXT != null}>
+                    <div className="absolute hidden lg:block bottom-3 right-3">
+                        <a href="https://beian.miit.gov.cn" className="secondary text-xs">{process.env.BOTTOM_TEXT}</a>
+                    </div>
+                </If>
             </body>
         </html>
     )

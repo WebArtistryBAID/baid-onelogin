@@ -24,6 +24,7 @@ To run in development:
 | `HOSTED`            | The location where OneLogin is hosted. No trailing slashes.                              |
 | `UPLOAD_ROOT`       | The directory where uploaded files are stored. In development, this is `public/uploads`. |
 | `UPLOAD_SERVE_PATH` | The path where uploaded files are served. In development, this is `uploads`.             |
+| `BOTTOM_TEXT`       | In case you need this.                                                                   |
 
 * Run `npm run dev`.
 
