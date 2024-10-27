@@ -69,6 +69,15 @@ export async function getMyAuthByID(id: number): Promise<Authorization> {
     }))!
 }
 
+export async function getMyAuthByApp(appId: number): Promise<Authorization | null> {
+    return (await prisma.authorization.findFirst({
+        where: {
+            userId: await findUserOrThrow(),
+            applicationId: appId
+        }
+    }))!
+}
+
 export async function getMyApps(): Promise<Application[]> {
     return (await prisma.application.findMany({
         where: {
