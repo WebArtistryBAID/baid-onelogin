@@ -9,7 +9,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
                 error_description: 'The client credentials are invalid.'
             },
             {
-                status: 401
+                status: 400
             }
         )
     }
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
                 error_description: 'The client credentials are invalid.'
             },
             {
-                status: 401
+                status: 400
             }
         )
     }
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
                 error_description: 'The provided grant type is not supported.'
             },
             {
-                status: 401
+                status: 400
             }
         )
     }
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             return NextResponse.json(
                 result,
                 {
-                    status: 401
+                    status: 400
                 }
             )
         }
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             return NextResponse.json(
                 result,
                 {
-                    status: 401
+                    status: 400
                 }
             )
         }
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             error_description: 'The provided grant type is not supported.'
         },
         {
-            status: 401
+            status: 400
         }
     )
 }

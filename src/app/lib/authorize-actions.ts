@@ -6,6 +6,7 @@ import { createSecretKey } from 'node:crypto'
 import { jwtVerify, SignJWT } from 'jose'
 import { getAppByID, verifyAppSecretByID } from '@/app/lib/app-actions'
 import { findUserOrThrow } from '@/app/lib/utils'
+import { NextRequest } from 'next/server'
 
 const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
@@ -387,6 +388,29 @@ export async function revokeMyAuthorization(auth: Authorization): Promise<void> 
             values: [ auth.applicationId.toString() ]
         }
     })
+}
+
+export async function getUserIDFromHeader(request: NextRequest): Promise<number | null> {
+    const auth = request.headers.get('Authorization')
+    if (auth == null || !auth.startsWith('Bearer ')) {
+        return null
+    }
+
+    try {
+        const jwt = await jwtVerify(auth.replace('Bearer ', ''), secret)
+        return jwt.payload.user as number
+    } catch {
+        return null
+    }
+}
+
+export async function validateFromHeader(request: NextRequest, scope: string[]): Promise<boolean> {
+    const auth = request.headers.get('Authorization')
+    if (auth == null || !auth.startsWith('Bearer ')) {
+        return false
+    }
+
+    return await validateAccessToken(auth.replace('Bearer ', ''), scope)
 }
 
 export async function validateAccessToken(accessToken: string, scope: string[]): Promise<boolean> {
