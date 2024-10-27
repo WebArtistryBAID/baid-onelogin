@@ -1,4 +1,14 @@
 {
   "title": "Authorizations",
-  "noApps": "You haven't authorized any applications yet"
+  "noApps": "You haven't authorized any applications yet",
+  "operatedBy": "Operated by <1>{{owner}}</1>",
+  "info": "You authorized this application to access the following on {{createTime}}:",
+  "terms": "You can view this application's <1>Terms of Service</1> and <2>Privacy Policy</2>.",
+  "scopeMessages": {
+    "basic": "This application can access your profile information.",
+    "phone": "This application can access your phone number.",
+    "calendar": "This application can access your calendar.",
+    "sms": "This application can send you SMS notifications."
+  },
+  "deauthorize": "Revoke Authorization"
 }

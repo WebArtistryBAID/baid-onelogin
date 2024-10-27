@@ -1,10 +1,11 @@
 'use server'
 
-import { ApprovalStatus, PrismaClient, Scope } from '@prisma/client'
+import { ApprovalStatus, Authorization, PrismaClient, Scope } from '@prisma/client'
 import { getMe } from '@/app/lib/user-actions'
 import { createSecretKey } from 'node:crypto'
 import { jwtVerify, SignJWT } from 'jose'
 import { getAppByID, verifyAppSecretByID } from '@/app/lib/app-actions'
+import { findUserOrThrow } from '@/app/lib/utils'
 
 const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
@@ -370,6 +371,22 @@ export async function revokeToken(token: string, credentials: string): Promise<b
         }
     })
     return true
+}
+
+export async function revokeMyAuthorization(auth: Authorization): Promise<void> {
+    await prisma.authorization.deleteMany({
+        where: {
+            id: auth.id,
+            userId: await findUserOrThrow()
+        }
+    })
+    await prisma.userAuditLog.create({
+        data: {
+            type: 'deauthorizedApp',
+            userId: await findUserOrThrow(),
+            values: [ auth.applicationId.toString() ]
+        }
+    })
 }
 
 export async function validateAccessToken(accessToken: string, scope: string[]): Promise<boolean> {

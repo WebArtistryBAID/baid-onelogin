@@ -242,10 +242,6 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
         </div>
         <p className="text-xs secondary mb-3">{t('view.scopesInfo')}</p>
 
-        <p className="text-sm secondary mb-1">{t('view.authorization')}</p>
-        <button className="btn mb-3">{t('view.viewAuthorizations')}</button>
-        <p className="text-sm secondary mb-1">{t('view.auditLogs')}</p>
-        <button className="btn mb-3">{t('view.viewAuditLogs')}</button>
         <p className="text-sm secondary mb-1">{t('view.others')}</p>
         <button className="btn-danger mb-3" onClick={() => setDeleteConfirm(true)}>{t('view.delete')}</button>
 

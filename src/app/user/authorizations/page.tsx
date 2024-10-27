@@ -2,6 +2,9 @@ import { useTranslation } from '@/app/i18n'
 import { getMyAuths } from '@/app/lib/user-actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHourglassEmpty } from '@fortawesome/free-solid-svg-icons'
+import Link from 'next/link'
+import { AppIcon } from '@/app/user/applications/AppIcon'
+import { getAppByID } from '@/app/lib/app-actions'
 
 export default async function Authorizations() {
     const { t } = await useTranslation('authorizations')
@@ -19,5 +22,15 @@ export default async function Authorizations() {
 
     return <div>
         <h1>{t('title')}</h1>
+        {auths.map(async auth => {
+            const app = (await getAppByID(auth.applicationId))!
+            return <Link href={`/user/authorizations/view?auth=${auth.id}`} key={auth.id}
+                         className="flex items-center h-16 p-3 w-full rounded-3xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-100">
+                <div className="h-8 w-8 mr-3">
+                    <AppIcon uploadable={false} size="small" app={app}/>
+                </div>
+                <p>{app.name}</p>
+            </Link>
+        })}
     </div>
 }

@@ -14,6 +14,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         )
     }
     const auth = request.headers.get('Authorization')!.replace('Basic ', '')
+    if (!request.headers.get('Authorization')!.startsWith('Basic ')) {
+        return NextResponse.json(
+            {
+                error: 'invalid_client',
+                error_description: 'The client credentials are invalid.'
+            },
+            {
+                status: 401
+            }
+        )
+    }
     const data = await request.formData()
     if (!data.has('grant_type')) {
         return NextResponse.json(

@@ -29,6 +29,15 @@ export async function getMyAuths(): Promise<Authorization[]> {
     }))
 }
 
+export async function getMyAuthByID(id: number): Promise<Authorization> {
+    return (await prisma.authorization.findUnique({
+        where: {
+            id,
+            userId: await findUserOrThrow()
+        }
+    }))!
+}
+
 export async function getMyApps(): Promise<Application[]> {
     return (await prisma.application.findMany({
         where: {

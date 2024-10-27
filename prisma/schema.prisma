@@ -56,11 +56,12 @@ model Application {
 
 model Authorization {
   id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now())
   user          User        @relation(fields: [userId], references: [seiueId], onDelete: Cascade)
   userId        Int
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   applicationId Int
-  scopes String[]
+  scopes        String[]
 }
 
 model ApprovalRequest {
