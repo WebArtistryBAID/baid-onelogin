@@ -21,7 +21,7 @@ export default async function Authorizations() {
     }
 
     return <div>
-        <h1>{t('title')}</h1>
+        <h1 className="mb-5">{t('title')}</h1>
         {auths.map(async auth => {
             const app = (await getAppByID(auth.applicationId))!
             return <Link href={`/user/authorizations/view?auth=${auth.id}`} key={auth.id}
