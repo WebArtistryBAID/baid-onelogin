@@ -61,6 +61,7 @@ model Authorization {
   userId        Int
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   applicationId Int
+  smsPhone      String?
   scopes        String[]
 }
 

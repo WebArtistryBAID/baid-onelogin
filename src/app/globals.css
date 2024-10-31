@@ -70,6 +70,10 @@ input.text {
   @apply bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-2 appearance-none;
 }
 
+input.sms {
+    @apply rounded-3xl bg-gray-200 dark:bg-gray-700 text-xl sm:text-2xl lg:text-3xl p-2 lg:p-5 appearance-none h-12 w-12 lg:h-16 lg:w-16 text-center;
+}
+
 b {
   @apply font-bold;
 }

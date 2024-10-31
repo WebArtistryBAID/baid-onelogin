@@ -20,5 +20,22 @@
   "back": "返回",
   "appInfo": "{{name}} 的管理员为 {{owner}}，且并不隶属于 OneLogin 或希悦。在继续之前，您应该查看 {{name}} 的 <1>服务条款</1> 和 <2>隐私条款</2>。",
   "approve": "授权",
-  "cancel": "取消"
+  "cancel": "取消",
+  "authorizing": "授权中...",
+  "sms": {
+    "title": "短信通知",
+    "noPhoneNumber": "您的账号未关联手机号码，因此您将无法接收短信通知。您是否要为此应用添加手机号码?",
+    "confirmPhoneNumber": "这是否是您希望接收短信通知的手机号码？",
+    "standardRates": "可能会收取标准费率。请咨询您的运营商了解详情。",
+    "enterPhoneNumber": "请输入您的手机号码以接收短信通知。",
+    "verifyError": "验证过于频繁，请稍后重试。",
+    "sent": "我们已向您的手机号码发送了验证码，请在下方输入。",
+    "phoneNumber": "手机号码",
+    "sendVerificationCode": "发送验证码",
+    "china": "中国 +86",
+    "addPhoneNumber": "添加手机号码",
+    "continue": "继续",
+    "useOtherNumber": "使用其他手机号码",
+    "continueWithoutNotifications": "不接收短信通知"
+  }
 }
