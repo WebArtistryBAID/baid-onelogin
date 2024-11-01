@@ -1,7 +1,7 @@
 'use client'
 
 import { AppIcon } from '@/app/user/applications/AppIcon'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
 import { Scope, User } from '@prisma/client'
@@ -18,6 +18,7 @@ export default function SMSAuthorization() {
     const { t } = useTranslationClient('authorize')
 
     const searchParams = useSearchParams()
+    const router = useRouter()
 
     const stateParam = searchParams.has('state') ? `&state=${searchParams.get('state')}` : ''
     const [ app, setApp ] = useState<ApplicationSimple | null | undefined>(undefined)
@@ -58,7 +59,7 @@ export default function SMSAuthorization() {
             <p className="mb-1 text-center">{t('sms.noPhoneNumber')}</p>
             <p className="secondary text-xs text-center mb-5">{t('sms.standardRates')}</p>
             <button disabled={loading} onClick={() => {
-                location.href = `/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')}`
+                router.push(`/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')}`)
             }} className="btn w-full mb-3">{t('sms.addPhoneNumber')}</button>
             <button disabled={loading} onClick={async () => {
                 setLoading(true)
@@ -85,7 +86,7 @@ export default function SMSAuthorization() {
             location.href = `${searchParams.get('redirect_uri')}?code=${code}${stateParam}`
         }} className="btn w-full mb-3">{t('sms.continue')}</button>
         <button disabled={loading} onClick={() => {
-            location.href = `/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')}`
+            router.push(`/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')}`)
         }} className="btn w-full mb-3">{t('sms.useOtherNumber')}</button>
         <button disabled={loading} onClick={async () => {
             setLoading(true)

@@ -2,11 +2,12 @@
 
 import { useTranslationClient } from '@/app/i18n/client'
 import { useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import login from '@/app/auth/callback/login'
 
 export default function AuthCallback() {
     const search = useSearchParams()
+    const router = useRouter()
     const {t} = useTranslationClient('auth')
 
     useEffect(() => {
@@ -19,7 +20,7 @@ export default function AuthCallback() {
         if (match && match[1]) {
             const token = match[1]
             login(false, token, redir!).then(url => {
-                location.href = url
+                router.push(url)
             })
         }
     }, [search])

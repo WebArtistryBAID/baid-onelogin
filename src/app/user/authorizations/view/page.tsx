@@ -4,7 +4,7 @@ import { useTranslationClient } from '@/app/i18n/client'
 import { useEffect, useState } from 'react'
 import { ApplicationSimple, getAppByID } from '@/app/lib/app-actions'
 import { Authorization } from '@prisma/client'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { getMyAuthByID, getUserNameByID } from '@/app/lib/user-actions'
 import { AppIcon } from '@/app/user/applications/AppIcon'
 import { Trans } from 'react-i18next/TransWithoutContext'
@@ -13,6 +13,7 @@ import { revokeMyAuthorization } from '@/app/lib/authorize-actions'
 export default function ViewAuthorization() {
     const { t } = useTranslationClient('authorizations')
     const searchParams = useSearchParams()
+    const router = useRouter()
 
     const [ app, setApp ] = useState<ApplicationSimple | null>(null)
     const [ auth, setAuth ] = useState<Authorization | null>(null)
@@ -62,7 +63,7 @@ export default function ViewAuthorization() {
             </p>
             <button className="btn-danger" onClick={async () => {
                 await revokeMyAuthorization(auth)
-                location.href = '/user/authorizations'
+                router.push('/user/authorizations')
             }}>{t('deauthorize')}</button>
         </div>
     </div>

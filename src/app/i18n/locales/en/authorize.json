@@ -29,12 +29,14 @@
     "standardRates": "Standard rates may apply. Check with your carrier for details.",
     "enterPhoneNumber": "Please enter your phone number to receive SMS notifications.",
     "verifyError": "You are verifying too quickly. Please try again later.",
+    "codeError": "This code is incorrect or expired.",
     "sent": "We have sent a verification code to your phone number, please enter it below.",
     "phoneNumber": "Phone Number",
     "sendVerificationCode": "Send Verification Code",
     "china": "China +86",
     "addPhoneNumber": "Add Phone Number",
     "continue": "Continue",
+    "retry": "You can retry in {{time}} seconds",
     "useOtherNumber": "Use Another Phone Number",
     "continueWithoutNotifications": "Continue Without Notifications"
   }

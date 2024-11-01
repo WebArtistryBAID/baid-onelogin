@@ -31,6 +31,10 @@ model User {
   appLogs       AppAuditLog[]
   auths         Authorization[]
   apps          Application[]
+  lastSMSVerify DateTime        @default("2022-12-07T17:24:53Z")
+  lastSendSMS   DateTime        @default("2022-12-07T17:24:53Z")
+  lastSMSPhone  String?
+  lastSMSCode   String?
 }
 
 model Application {

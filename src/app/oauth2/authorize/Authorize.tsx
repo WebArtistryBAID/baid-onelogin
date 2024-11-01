@@ -9,7 +9,7 @@ import { Trans } from 'react-i18next/TransWithoutContext'
 import { authorizeForCode } from '@/app/lib/authorize-actions'
 import { useTranslationClient } from '@/app/i18n/client'
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -17,6 +17,7 @@ export default function Authorize({ csrfToken }: { csrfToken: string }) {
     const { t } = useTranslationClient('authorize')
 
     const searchParams = useSearchParams()
+    const router = useRouter()
 
     if (searchParams.get('response_type') !== 'code') {
         return <Error message="errorResponseType"/>
@@ -87,7 +88,7 @@ export default function Authorize({ csrfToken }: { csrfToken: string }) {
             setLoading(true)
             if (scopes.includes('sms')) {
                 // Separate confirmation process for SMS
-                location.href = `/oauth2/authorize/sms?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${csrfToken}`
+                router.push(`/oauth2/authorize/sms?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${csrfToken}`)
                 return
             }
             const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!, csrfToken)

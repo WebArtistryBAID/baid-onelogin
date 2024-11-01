@@ -46,12 +46,24 @@ h1 {
   @apply font-bold bg-blue-500 hover:bg-blue-600 transition-colors duration-100 text-white py-2 px-4 rounded-full;
 }
 
+.btn:disabled {
+    @apply bg-blue-300 dark:bg-blue-700 hover:bg-blue-300 hover:dark:bg-blue-700 font-normal;
+}
+
 .btn-secondary {
   @apply bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-100 dark:text-white py-2 px-4 rounded-full;
 }
 
+.btn-secondary:disabled {
+    @apply bg-gray-50 hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-800;
+}
+
 .btn-danger {
   @apply font-bold bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white py-2 px-4 rounded-full;
+}
+
+.btn-danger:disabled {
+    @apply bg-red-300 dark:bg-red-700 hover:bg-red-300 hover:dark:bg-red-700 font-normal;
 }
 
 .nav-content {

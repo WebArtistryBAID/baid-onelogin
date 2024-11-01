@@ -1,6 +1,6 @@
 'use client'
 
-import { redirect } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import {
     createApprovalRequest,
     deleteApp,
@@ -24,6 +24,7 @@ import Scope = $Enums.Scope
 export default function ApplicationView({ searchParams }: { searchParams: never }) {
     const { t } = useTranslationClient('applications')
     const [ me, setMe ] = useState<User | null>(null)
+    const router = useRouter()
 
     const [ copiedHighlight, setCopiedHighlight ] = useState(false)
     const [ copiedHighlightSecret, setCopiedHighlightSecret ] = useState(false)
@@ -54,7 +55,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
         (async () => {
             const a = await getMyAppByIDSecure(parseInt(searchParams['app']))
             if (a == null) {
-                location.href = '/user/applications'
+                router.push('/user/applications')
                 return
             }
             getUserNameByID(a.ownerId).then(setOwnerName)
@@ -274,7 +275,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                 <button disabled={saveLoading} onClick={async () => {
                     setDeleting(true)
                     await deleteApp(app.id)
-                    location.href = '/user/applications'
+                    router.push('/user/applications')
                 }} className="btn-danger flex-shrink">{t(deleting ? 'view.deleting' : 'view.confirm')}</button>
             </div>
         </div>

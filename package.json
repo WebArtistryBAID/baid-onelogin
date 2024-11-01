@@ -28,6 +28,7 @@
     "react-cookie": "^7.2.1",
     "react-dom": "^18",
     "react-i18next": "^15.1.0",
+    "react-interval-hook": "^1.1.4",
     "react-phone-number-input": "^3.4.9",
     "sharp": "^0.33.5"
   },
