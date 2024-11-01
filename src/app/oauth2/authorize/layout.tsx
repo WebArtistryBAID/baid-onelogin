@@ -3,7 +3,9 @@ export default async function AuthorizeLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
-    return <div className="simple-container">
-        {children}
-    </div>
+    return <main className="lg:bg-[url(/images/bg-ad.jpg)]">
+        <div className="simple-container">
+            {children}
+        </div>
+    </main>
 }

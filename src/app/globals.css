@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+main {
   @apply px-4 py-4 lg:px-48 font-body bg-cover bg-center lg:py-24 xl:px-72 xl:py-36 2xl:px-96 2xl:py-48 flex flex-col h-screen w-screen justify-center items-center text-slate-900 bg-blue-100 dark:text-white dark:bg-[#1f263d];
 }
 
@@ -11,7 +11,7 @@ h1 {
 }
 
 .simple-container {
-  @apply rounded-xl shadow-xl w-full lg:w-2/3 xl:w-1/2 h-full overflow-y-auto p-5 bg-white dark:bg-gray-800/70;
+  @apply rounded-3xl shadow-xl w-full lg:w-2/3 xl:w-1/2 lg:transform lg:-translate-x-1/2 xl:-translate-x-3/4 h-full overflow-y-auto p-5 bg-white dark:bg-gray-800;
 }
 
 .base-container {

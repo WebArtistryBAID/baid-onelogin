@@ -215,10 +215,11 @@ export default function BindPhoneNumber() {
         <h1 className="m-5 text-center">{t('sms.title')}</h1>
         <p className="mb-3 text-center">{t('sms.enterPhoneNumber')}</p>
         <div className="w-full flex items-center mb-3">
-            <p className="flex-shrink mr-3">{t('sms.china')}</p>
+            <p className="w-1/5 mr-3 hidden lg:block text-center">{t('sms.china')}</p>
+            <p className="w-1/5 lg:hidden text-center mr-3">+86</p>
             <PhoneInput onChange={setPhone} country="CN" value={phone}
                         inputComponent={React.forwardRef((props, ref) => <input {...props} ref={ref}
-                                                                                className="text flex-grow"
+                                                                                className="text w-4/5"
                                                                                 placeholder={t('sms.phoneNumber')}
                                                                                 autoFocus={true}/>)}/>
         </div>
