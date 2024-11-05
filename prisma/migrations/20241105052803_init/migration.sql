@@ -2,10 +2,13 @@
 CREATE TYPE "UserType" AS ENUM ('student', 'teacher');
 
 -- CreateEnum
+CREATE TYPE "ApprovalStatus" AS ENUM ('pending', 'approved', 'rejected');
+
+-- CreateEnum
 CREATE TYPE "UserAuditLogType" AS ENUM ('created', 'logIn', 'authorizedApp', 'deauthorizedApp');
 
 -- CreateEnum
-CREATE TYPE "AppAuditLogType" AS ENUM ('created', 'updated', 'authorizedUser', 'approved', 'disapproved');
+CREATE TYPE "AppAuditLogType" AS ENUM ('created', 'updated', 'authorizedUser');
 
 -- CreateEnum
 CREATE TYPE "Scope" AS ENUM ('basic', 'phone', 'calendar', 'sms');
@@ -26,8 +29,12 @@ CREATE TABLE "User" (
     "classTeacher0" TEXT,
     "gender" "Gender" NOT NULL,
     "lastUserAgent" TEXT NOT NULL,
-    "admin"         BOOLEAN NOT NULL DEFAULT false,
+    "admin"         BOOLEAN      NOT NULL DEFAULT false,
     "type" "UserType" NOT NULL,
+    "lastSMSVerify" TIMESTAMP(3) NOT NULL DEFAULT '2022-12-07 17:24:53 +00:00',
+    "lastSendSMS"   TIMESTAMP(3) NOT NULL DEFAULT '2022-12-07 17:24:53 +00:00',
+    "lastSMSPhone"  TEXT,
+    "lastSMSCode"   TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("seiueId")
 );
@@ -36,7 +43,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Application" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "icon"    TEXT,
+    "icon"     TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "redirectUrls" TEXT[],
@@ -45,8 +52,8 @@ CREATE TABLE "Application" (
     "clientSecret" TEXT NOT NULL,
     "ownerId" INTEGER NOT NULL,
     "message" TEXT NOT NULL,
-    "approved" BOOLEAN NOT NULL,
-    "terms"   TEXT,
+    "approved" "ApprovalStatus" NOT NULL,
+    "terms"    TEXT,
     "privacy" TEXT,
 
     CONSTRAINT "Application_pkey" PRIMARY KEY ("id")
@@ -55,8 +62,11 @@ CREATE TABLE "Application" (
 -- CreateTable
 CREATE TABLE "Authorization" (
     "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" INTEGER NOT NULL,
     "applicationId" INTEGER NOT NULL,
+    "smsPhone"  TEXT,
+    "scopes"    TEXT[],
 
     CONSTRAINT "Authorization_pkey" PRIMARY KEY ("id")
 );
@@ -64,7 +74,7 @@ CREATE TABLE "Authorization" (
 -- CreateTable
 CREATE TABLE "ApprovalRequest"
 (
-    "id"            SERIAL  NOT NULL,
+    "id" SERIAL NOT NULL,
     "applicationId" INTEGER NOT NULL,
 
     CONSTRAINT "ApprovalRequest_pkey" PRIMARY KEY ("id")
