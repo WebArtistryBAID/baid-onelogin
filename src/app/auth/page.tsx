@@ -1,4 +1,5 @@
 import {useTranslation} from '@/app/i18n'
+import Link from 'next/link'
 
 export default async function AuthPage({searchParams}: { searchParams: never }) {
     const {t} = await useTranslation('auth')
@@ -9,6 +10,7 @@ export default async function AuthPage({searchParams}: { searchParams: never }) 
         <h1 className="mb-1 text-center">{t('onelogin')}</h1>
         <p className="text-center text-sm mb-5">{t('description')}</p>
         <a href={redirect} className="mb-3 w-full btn block text-center">{t('loginSeiue')}</a>
-        <button className="mb-3 w-full btn-secondary">{t('loginAccessCode')}</button>
+        <Link href={`/auth/code?redirect=${encodeURIComponent(back)}`}
+              className="mb-3 w-full block text-center btn-secondary">{t('loginAccessCode')}</Link>
     </div>
 }

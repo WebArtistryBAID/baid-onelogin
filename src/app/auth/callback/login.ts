@@ -1,12 +1,66 @@
 'use server'
 
-import { cookies, headers } from 'next/headers'
-import { SignJWT } from 'jose'
-import { Gender, PrismaClient, UserAuditLogType, UserType } from '@prisma/client'
-import { createSecretKey } from 'node:crypto'
+import {cookies, headers} from 'next/headers'
+import {SignJWT} from 'jose'
+import {Gender, PrismaClient, UserAuditLogType, UserType} from '@prisma/client'
+import {createSecretKey} from 'node:crypto'
 
 const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
+
+export async function loginWithAccessCode(code: string): Promise<boolean> {
+    const head = headers()
+    const ip = head.get('X-Forwarded-For') ?? head.get('X-Real-IP') ?? 'localhost'
+    if (code.length < 1) {
+        return false
+    }
+    const access = await prisma.accessCode.findFirst({
+        where: {
+            code
+        }
+    })
+    if (access == null) {
+        return false
+    }
+    const user = await prisma.user.findUnique({
+        where: {
+            seiueId: access.userId
+        }
+    })
+    if (user == null) {
+        return false
+    }
+    if (!access.persistent) {
+        await prisma.accessCode.deleteMany({
+            where: {
+                code
+            }
+        })
+    }
+    await prisma.userAuditLog.create({
+        data: {
+            userId: user.seiueId,
+            type: UserAuditLogType.logIn,
+            values: [head.get('User-Agent') ?? '', ip]
+        }
+    })
+    const token = await new SignJWT({
+        seiueId: user.seiueId,
+        name: user.name,
+        pinyin: user.pinyin,
+        type: 'internal'
+    })
+        .setIssuedAt()
+        .setIssuer('https://beijing.academy')
+        .setAudience('https://beijing.academy')
+        .setExpirationTime('1 day')
+        .setProtectedHeader({alg: 'HS256'})
+        .sign(secret)
+    cookies().set('access_token', token, {
+        expires: new Date(Date.now() + 86400000)
+    })
+    return true
+}
 
 export default async function login(error: boolean | null, tok: string | null, target: string): Promise<string> {
     const head = headers()

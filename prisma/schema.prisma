@@ -29,12 +29,22 @@ model User {
   type          UserType
   logs          UserAuditLog[]
   appLogs       AppAuditLog[]
+  accessCodes AccessCode[]
   auths         Authorization[]
   apps          Application[]
   lastSMSVerify DateTime        @default("2022-12-07T17:24:53Z")
   lastSendSMS   DateTime        @default("2022-12-07T17:24:53Z")
   lastSMSPhone  String?
   lastSMSCode   String?
+}
+
+model AccessCode {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  code       String
+  userId     Int
+  user       User     @relation(fields: [userId], references: [seiueId], onDelete: Cascade)
+  persistent Boolean
 }
 
 model Application {
