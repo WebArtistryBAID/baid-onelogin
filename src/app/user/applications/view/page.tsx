@@ -1,6 +1,6 @@
 'use client'
 
-import { redirect, useRouter } from 'next/navigation'
+import {redirect, useRouter} from 'next/navigation'
 import {
     createApprovalRequest,
     deleteApp,
@@ -10,14 +10,14 @@ import {
     setAppApprovalStatus,
     updateApp
 } from '@/app/lib/app-actions'
-import { AppIcon } from '@/app/user/applications/AppIcon'
-import { getMe, getUserNameByID } from '@/app/lib/user-actions'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCopy } from '@fortawesome/free-regular-svg-icons'
-import { useTranslationClient } from '@/app/i18n/client'
-import { useEffect, useState } from 'react'
-import { $Enums, Application, ApprovalRequest, ApprovalStatus, User } from '@prisma/client'
-import { faClose, faRefresh, faWarning } from '@fortawesome/free-solid-svg-icons'
+import {AppIcon} from '@/app/user/applications/AppIcon'
+import {getMe, getUserNameByID} from '@/app/lib/user-actions'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCopy} from '@fortawesome/free-regular-svg-icons'
+import {useTranslationClient} from '@/app/i18n/client'
+import {useEffect, useState} from 'react'
+import {$Enums, Application, ApprovalRequest, ApprovalStatus, User} from '@prisma/client'
+import {faClose, faRefresh, faWarning} from '@fortawesome/free-solid-svg-icons'
 import If from '@/app/lib/If'
 import Scope = $Enums.Scope
 
@@ -156,7 +156,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
 
                 <button className="absolute right-3 top-2 icon-btn h-8 w-8"
                         onClick={() => {
-                            void navigator.clipboard.writeText(app.clientId)
+                            void navigator.clipboard.writeText(secret)
                             setCopiedHighlightSecret(true)
                             setTimeout(() => setCopiedHighlightSecret(false), 1000)
                         }}>
