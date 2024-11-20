@@ -1,29 +1,29 @@
 'use client'
 
-import { AppIcon } from '@/app/user/applications/AppIcon'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
-import { Scope, User } from '@prisma/client'
-import { getMe } from '@/app/lib/user-actions'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import {AppIcon} from '@/app/user/applications/AppIcon'
+import {useRouter, useSearchParams} from 'next/navigation'
+import {Suspense, useEffect, useState} from 'react'
+import {ApplicationSimple, getAppByClientID} from '@/app/lib/app-actions'
+import {Scope, User} from '@prisma/client'
+import {getMe} from '@/app/lib/user-actions'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faSpinner} from '@fortawesome/free-solid-svg-icons'
 import Error from '@/app/oauth2/authorize/Error'
-import { useTranslationClient } from '@/app/i18n/client'
-import { parsePhoneNumber } from 'libphonenumber-js'
-import { authorizeForCode } from '@/app/lib/authorize-actions'
+import {useTranslationClient} from '@/app/i18n/client'
+import {parsePhoneNumber} from 'libphonenumber-js'
+import {authorizeForCode} from '@/app/lib/authorize-actions'
 
-export default function SMSAuthorization() {
+function Sub() {
     // The app will not be able to send SMS notifications if this step is not completed
-    const { t } = useTranslationClient('authorize')
+    const {t} = useTranslationClient('authorize')
 
     const searchParams = useSearchParams()
     const router = useRouter()
 
     const stateParam = searchParams.has('state') ? `&state=${searchParams.get('state')}` : ''
-    const [ app, setApp ] = useState<ApplicationSimple | null | undefined>(undefined)
-    const [ me, setMe ] = useState<User | null | undefined>(undefined)
-    const [ loading, setLoading ] = useState(false)
+    const [app, setApp] = useState<ApplicationSimple | null | undefined>(undefined)
+    const [me, setMe] = useState<User | null | undefined>(undefined)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -31,7 +31,7 @@ export default function SMSAuthorization() {
             setApp(a)
             setMe(await getMe())
         })()
-    }, [ searchParams ])
+    }, [searchParams])
 
     if (app === undefined || me === undefined) {
         return <div className="flex justify-center items-center h-full">
@@ -97,4 +97,8 @@ export default function SMSAuthorization() {
             location.href = `${searchParams.get('redirect_uri')}?code=${code}${stateParam}`
         }} className="btn-secondary w-full text-center">{t('sms.continueWithoutNotifications')}</button>
     </div>
+}
+
+export default function SMSAuthorization() {
+    return <Suspense><Sub/></Suspense>
 }
