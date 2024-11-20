@@ -1,38 +1,38 @@
 'use client'
 
-import { useTranslationClient } from '@/app/i18n/client'
-import { useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
-import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
-import { Scope, User } from '@prisma/client'
-import { getMe } from '@/app/lib/user-actions'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import {useTranslationClient} from '@/app/i18n/client'
+import {useSearchParams} from 'next/navigation'
+import React, {useEffect, useState} from 'react'
+import {ApplicationSimple, getAppByClientID} from '@/app/lib/app-actions'
+import {Scope, User} from '@prisma/client'
+import {getMe} from '@/app/lib/user-actions'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faSpinner} from '@fortawesome/free-solid-svg-icons'
 import Error from '@/app/oauth2/authorize/Error'
-import { AppIcon } from '@/app/user/applications/AppIcon'
+import {AppIcon} from '@/app/user/applications/AppIcon'
 import PhoneInput from 'react-phone-number-input/input-mobile'
-import { E164Number } from 'libphonenumber-js'
-import { authorizeSMSForCode, sendVerificationCode } from '@/app/lib/sms-actions'
+import {E164Number} from 'libphonenumber-js'
+import {authorizeSMSForCode, sendVerificationCode} from '@/app/lib/sms-actions'
 import If from '@/app/lib/If'
-import { useInterval } from 'react-interval-hook'
+import {useInterval} from 'react-interval-hook'
 
 export default function BindPhoneNumber() {
-    const { t } = useTranslationClient('authorize')
+    const {t} = useTranslationClient('authorize')
 
     const searchParams = useSearchParams()
 
     const stateParam = searchParams.has('state') ? `&state=${searchParams.get('state')}` : ''
-    const [ app, setApp ] = useState<ApplicationSimple | null | undefined>(undefined)
-    const [ me, setMe ] = useState<User | null | undefined>(undefined)
-    const [ loading, setLoading ] = useState(false)
-    const [ smsSent, setSmsSent ] = useState(false)
-    const [ codeError, setCodeError ] = useState(false)
-    const [ sendError, setSendError ] = useState(false)
-    const [ phone, setPhone ] = useState<E164Number | undefined>()
+    const [app, setApp] = useState<ApplicationSimple | null | undefined>(undefined)
+    const [me, setMe] = useState<User | null | undefined>(undefined)
+    const [loading, setLoading] = useState(false)
+    const [smsSent, setSmsSent] = useState(false)
+    const [codeError, setCodeError] = useState(false)
+    const [sendError, setSendError] = useState(false)
+    const [phone, setPhone] = useState<E164Number | undefined>()
 
-    const [ value, setValue ] = useState('')
+    const [value, setValue] = useState('')
 
-    const [ retryTimeLeft, setRetryTimeLeft ] = useState(0)
+    const [retryTimeLeft, setRetryTimeLeft] = useState(0)
 
     useEffect(() => {
         (async () => {
@@ -40,7 +40,7 @@ export default function BindPhoneNumber() {
             setApp(a)
             setMe(await getMe())
         })()
-    }, [ searchParams ])
+    }, [searchParams])
 
     useInterval(() => {
         if (retryTimeLeft > 0) {
@@ -109,10 +109,11 @@ export default function BindPhoneNumber() {
         <div className="w-full flex items-center mb-3">
             <p className="w-1/5 mr-3 hidden lg:block text-center">{t('sms.china')}</p>
             <p className="w-1/5 lg:hidden text-center mr-3">+86</p>
-            <PhoneInput onChange={setPhone} country="CN" value={phone}
-                        inputComponent={React.forwardRef((props, ref) => <input {...props} ref={ref}
+            {/* eslint-disable-next-line react/display-name */}
+            <PhoneInput inputComponent={React.forwardRef((props, ref) => <input {...props} ref={ref}
                                                                                 className="text w-4/5" autoFocus={true}
-                                                                                placeholder={t('sms.phoneNumber')}/>)}/>
+                                                                                placeholder={t('sms.phoneNumber')}/>)}
+                        onChange={setPhone} country="CN" value={phone}/>
         </div>
         <If condition={sendError}>
             <p className="text-red-500 text-center mb-3">{t('sms.verifyError')}</p>
@@ -128,7 +129,7 @@ export default function BindPhoneNumber() {
                 setSendError(true)
             }
             setLoading(false)
-        }}>{retryTimeLeft < 1 ? t('sms.sendVerificationCode') : t('sms.retry', { time: retryTimeLeft })}</button>
+        }}>{retryTimeLeft < 1 ? t('sms.sendVerificationCode') : t('sms.retry', {time: retryTimeLeft})}</button>
         <a href={`/oauth2/authorize/sms?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')!}`}
            className="text-center w-full btn-secondary">{t('back')}</a>
     </div>

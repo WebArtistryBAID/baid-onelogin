@@ -68,7 +68,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
             setMe(await getMe())
             setEAR(await getApprovalRequestForApp(a.id))
         })()
-    }, [ searchParams ])
+    }, [router, searchParams])
 
     if (app == null || me == null) {
         return <div>

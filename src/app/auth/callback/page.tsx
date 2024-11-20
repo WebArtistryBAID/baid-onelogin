@@ -1,8 +1,8 @@
 'use client'
 
-import { useTranslationClient } from '@/app/i18n/client'
-import { useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import {useTranslationClient} from '@/app/i18n/client'
+import {useEffect} from 'react'
+import {useRouter, useSearchParams} from 'next/navigation'
 import login from '@/app/auth/callback/login'
 
 export default function AuthCallback() {
@@ -23,7 +23,7 @@ export default function AuthCallback() {
                 router.push(url)
             })
         }
-    }, [search])
+    }, [router, search])
 
     return <div className="flex justify-center items-center h-screen">
         <p>{t('callback')}</p>
