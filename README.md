@@ -16,15 +16,21 @@ To run in development:
 * Run `npm install`.
 * Copy `.env.example` to `.env` and fill the following environment variables:
 
-| Name                | Description                                                                              |
-|---------------------|------------------------------------------------------------------------------------------|
-| `DATABASE_URL`      | The database URL to use. Typically `sqlite:///database.db`.                              |
-| `JWT_SECRET`        | The JWT secret key to use. You can generate one with `openssl rand -hex 32`.             |
-| `SEIUE_CLIENT_ID`   | The client ID received from SEIUE for authentication.                                    |
-| `HOSTED`            | The location where OneLogin is hosted. No trailing slashes.                              |
-| `UPLOAD_ROOT`       | The directory where uploaded files are stored. In development, this is `public/uploads`. |
-| `UPLOAD_SERVE_PATH` | The path where uploaded files are served. In development, this is `uploads`.             |
-| `BOTTOM_TEXT`       | In case you need this.                                                                   |
+| Name                       | Description                                                                              |
+|----------------------------|------------------------------------------------------------------------------------------|
+| `DATABASE_URL`             | The database URL to use. Typically `sqlite:///database.db`.                              |
+| `JWT_SECRET`               | The JWT secret key to use. You can generate one with `openssl rand -hex 32`.             |
+| `SEIUE_CLIENT_ID`          | The client ID received from SEIUE for authentication.                                    |
+| `HOSTED`                   | The location where OneLogin is hosted. No trailing slashes.                              |
+| `UPLOAD_ROOT`              | The directory where uploaded files are stored. In development, this is `public/uploads`. |
+| `UPLOAD_SERVE_PATH`        | The path where uploaded files are served. In development, this is `uploads`.             |
+| `BOTTOM_TEXT`              | In case you need this.                                                                   |
+| `ALIYUN_ENDPOINT`          | Aliyun SMS endpoint.                                                                     |
+| `ALIYUN_ACCESSKEY_ID`      | Aliyun Access Key ID.                                                                    |
+| `ALIYUN_ACCESSKEY_SECRET`  | Aliyun Access Key Secret.                                                                |
+| `ALIYUN_REGION`            | Aliyun SMS region.                                                                       |
+| `ALIYUN_SIGNATURE_NAME`    | Signature name for SMS on Aliyun.                                                        |
+| `ALIYUN_TEMPLATE_CODE_SMS` | Template code for sending verification codes in Aliyun SMS.                              |
 
 * Run `npm run dev`.
 
