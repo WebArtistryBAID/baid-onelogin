@@ -1,11 +1,11 @@
 'use server'
 
-import {ApprovalStatus, PrismaClient, Scope} from '@prisma/client'
-import {createSecretKey, randomInt} from 'node:crypto'
-import {getMe} from '@/app/lib/user-actions'
-import {jwtVerify, SignJWT} from 'jose'
-import Client, {SendSmsRequest} from '@alicloud/dysmsapi20170525'
-import {Config} from '@alicloud/openapi-client'
+import { ApprovalStatus, PrismaClient, Scope } from '@prisma/client'
+import { createSecretKey, randomInt } from 'node:crypto'
+import { getMe } from '@/app/lib/user-actions'
+import { SignJWT } from 'jose'
+import Client, { SendSmsRequest } from '@alicloud/dysmsapi20170525'
+import { Config } from '@alicloud/openapi-client'
 
 const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
@@ -59,7 +59,7 @@ export async function sendVerificationCode(phone: string): Promise<boolean> {
     return true
 }
 
-export async function authorizeSMSForCode(code: string, application: number, scopes: Scope[], state: string | null, redirectURI: string, csrfToken: string): Promise<string | null> {
+export async function authorizeSMSForCode(code: string, application: number, scopes: Scope[], state: string | null, redirectURI: string): Promise<string | null> {
     const me = await getMe()
     if (!me) {
         return null
@@ -73,15 +73,6 @@ export async function authorizeSMSForCode(code: string, application: number, sco
         }
     })
     if (!app) {
-        return null
-    }
-
-    try {
-        const csrf = await jwtVerify(csrfToken, secret)
-        if (csrf.payload.type !== 'csrf' || csrf.payload.app !== app.clientId || csrf.payload.redirectURI !== redirectURI) {
-            return null
-        }
-    } catch {
         return null
     }
     if (app.approved !== ApprovalStatus.approved && app.ownerId !== me.seiueId) {
