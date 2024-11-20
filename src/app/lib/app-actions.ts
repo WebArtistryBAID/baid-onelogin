@@ -70,7 +70,7 @@ export async function createApp(formData: FormData): Promise<Application> {
             privacy: null
         }
     })
-    prisma.appAuditLog.create({
+    await prisma.appAuditLog.create({
         data: {
             type: 'created',
             application: {
@@ -111,7 +111,7 @@ export async function refreshAppSecret(id: number): Promise<string> {
     if (app == null) {
         throw new Error('Application not found')
     }
-    prisma.appAuditLog.create({
+    await prisma.appAuditLog.create({
         data: {
             type: 'updated',
             application: {
@@ -127,7 +127,7 @@ export async function refreshAppSecret(id: number): Promise<string> {
         }
     })
     const secret = randomBytes(32).toString('hex')
-    prisma.application.update({
+    await prisma.application.update({
         where: {
             id: app.id
         },
@@ -201,7 +201,7 @@ export async function updateApp(data: Partial<Application>): Promise<Application
     if (app == null) {
         throw new Error('Application not found')
     }
-    prisma.appAuditLog.create({
+    await prisma.appAuditLog.create({
         data: {
             type: 'updated',
             application: {
@@ -242,7 +242,7 @@ export async function setAppApprovalStatus(id: number, approved: ApprovalStatus)
     if (app == null) {
         throw new Error('Application not found')
     }
-    prisma.appAuditLog.create({
+    await prisma.appAuditLog.create({
         data: {
             type: 'updated',
             application: {
@@ -317,7 +317,7 @@ export async function uploadAppIcon(formData: FormData): Promise<Application> {
             quality: 90
         })
         .toFile(path.join(root!, 'app-icons', fn))
-    prisma.appAuditLog.create({
+    await prisma.appAuditLog.create({
         data: {
             type: 'updated',
             application: {
