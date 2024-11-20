@@ -1,20 +1,20 @@
 'use client'
 
-import {useTranslationClient} from '@/app/i18n/client'
-import {useSearchParams} from 'next/navigation'
-import React, {Suspense, useEffect, useState} from 'react'
-import {ApplicationSimple, getAppByClientID} from '@/app/lib/app-actions'
-import {Scope, User} from '@prisma/client'
-import {getMe} from '@/app/lib/user-actions'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faSpinner} from '@fortawesome/free-solid-svg-icons'
+import { useTranslationClient } from '@/app/i18n/client'
+import { useSearchParams } from 'next/navigation'
+import React, { Suspense, useEffect, useState } from 'react'
+import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
+import { Scope, User } from '@prisma/client'
+import { getMe } from '@/app/lib/user-actions'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import Error from '@/app/oauth2/authorize/Error'
-import {AppIcon} from '@/app/user/applications/AppIcon'
+import { AppIcon } from '@/app/user/applications/AppIcon'
 import PhoneInput from 'react-phone-number-input/input-mobile'
-import {E164Number} from 'libphonenumber-js'
-import {authorizeSMSForCode, sendVerificationCode} from '@/app/lib/sms-actions'
+import { E164Number } from 'libphonenumber-js'
+import { authorizeSMSForCode, sendVerificationCode } from '@/app/lib/sms-actions'
 import If from '@/app/lib/If'
-import {useInterval} from 'react-interval-hook'
+import { useInterval } from 'react-interval-hook'
 
 function Sub() {
     const {t} = useTranslationClient('authorize')
@@ -121,12 +121,14 @@ function Sub() {
         <p className="secondary text-xs text-center mb-5">{t('sms.standardRates')}</p>
         <button className="w-full mb-3 btn" disabled={loading || retryTimeLeft > 0} onClick={async () => {
             setLoading(true)
-            if (await sendVerificationCode(phone!)) {
-                setCodeError(false)
-                setRetryTimeLeft(90)
-                setSmsSent(true)
-            } else {
-                setSendError(true)
+            if (phone!.startsWith('+86') && phone!.length === 14) {
+                if (await sendVerificationCode(phone!)) {
+                    setCodeError(false)
+                    setRetryTimeLeft(90)
+                    setSmsSent(true)
+                } else {
+                    setSendError(true)
+                }
             }
             setLoading(false)
         }}>{retryTimeLeft < 1 ? t('sms.sendVerificationCode') : t('sms.retry', {time: retryTimeLeft})}</button>
