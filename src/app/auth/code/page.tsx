@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React, {Suspense, useState} from 'react'
 import {useTranslationClient} from '@/app/i18n/client'
-import {useSearchParams} from 'next/navigation'
+import {useRouter, useSearchParams} from 'next/navigation'
 import {loginWithAccessCode} from '@/app/auth/callback/login'
 import If from '@/app/lib/If'
 
@@ -13,6 +13,7 @@ function Sub() {
     const [value, setValue] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const router = useRouter()
 
     const redirect = search.has('redirect') ? search.get('redirect')! : '/'
 
@@ -34,7 +35,7 @@ function Sub() {
             }
             setLoading(true)
             if (await loginWithAccessCode(value)) {
-                location.href = redirect
+                router.push(redirect)
             } else {
                 setError(true)
             }
