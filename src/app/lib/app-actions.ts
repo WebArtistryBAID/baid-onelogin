@@ -1,12 +1,12 @@
 'use server'
 
-import { Application, ApprovalRequest, ApprovalStatus, PrismaClient } from '@prisma/client'
-import { randomBytes, randomUUID } from 'node:crypto'
-import { findUserOrThrow } from '@/app/lib/utils'
+import {Application, ApprovalRequest, ApprovalStatus, PrismaClient} from '@prisma/client'
+import {randomBytes, randomUUID} from 'node:crypto'
+import {findUserOrThrow} from '@/app/lib/utils'
 import path from 'node:path'
 import sharp from 'sharp'
 import fsPromise from 'node:fs/promises'
-import { getMe } from '@/app/lib/user-actions'
+import {getMe} from '@/app/lib/user-actions'
 
 const prisma = new PrismaClient()
 
@@ -135,7 +135,7 @@ export async function refreshAppSecret(id: number): Promise<string> {
             clientSecret: secret
         }
     })
-    return randomBytes(32).toString('hex')
+    return secret
 }
 
 export async function getMyAppByID(id: number): Promise<Application | null> {
