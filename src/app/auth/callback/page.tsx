@@ -1,11 +1,11 @@
 'use client'
 
 import {useTranslationClient} from '@/app/i18n/client'
-import {useEffect} from 'react'
+import {Suspense, useEffect} from 'react'
 import {useRouter, useSearchParams} from 'next/navigation'
 import login from '@/app/auth/callback/login'
 
-export default function AuthCallback() {
+function Sub() {
     const search = useSearchParams()
     const router = useRouter()
     const {t} = useTranslationClient('auth')
@@ -28,4 +28,8 @@ export default function AuthCallback() {
     return <div className="flex justify-center items-center h-screen">
         <p>{t('callback')}</p>
     </div>
+}
+
+export default function AuthCallback() {
+    return <Suspense><Sub/></Suspense>
 }

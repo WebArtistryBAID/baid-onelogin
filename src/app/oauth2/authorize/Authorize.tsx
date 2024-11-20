@@ -1,19 +1,19 @@
 'use client'
 
 import Error from './Error'
-import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
-import { ApprovalStatus, Scope, User } from '@prisma/client'
-import { AppIcon } from '@/app/user/applications/AppIcon'
-import { getMe, getUserNameByID } from '@/app/lib/user-actions'
-import { Trans } from 'react-i18next/TransWithoutContext'
-import { authorizeForCode } from '@/app/lib/authorize-actions'
-import { useTranslationClient } from '@/app/i18n/client'
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import {ApplicationSimple, getAppByClientID} from '@/app/lib/app-actions'
+import {ApprovalStatus, Scope, User} from '@prisma/client'
+import {AppIcon} from '@/app/user/applications/AppIcon'
+import {getMe, getUserNameByID} from '@/app/lib/user-actions'
+import {Trans} from 'react-i18next/TransWithoutContext'
+import {authorizeForCode} from '@/app/lib/authorize-actions'
+import {useTranslationClient} from '@/app/i18n/client'
+import {Suspense, useEffect, useState} from 'react'
+import {useRouter, useSearchParams} from 'next/navigation'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faSpinner} from '@fortawesome/free-solid-svg-icons'
 
-export default function Authorize({ csrfToken }: { csrfToken: string }) {
+function Sub({csrfToken}: { csrfToken: string }) {
     const { t } = useTranslationClient('authorize')
 
     const searchParams = useSearchParams()
@@ -100,4 +100,8 @@ export default function Authorize({ csrfToken }: { csrfToken: string }) {
         <a href={`${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+user+denied+the+authorization+request${stateParam}`}
            className="btn-secondary w-full text-center">{t('cancel')}</a>
     </div>
+}
+
+export default function Authorize({csrfToken}: { csrfToken: string }) {
+    return <Suspense><Sub csrfToken={csrfToken}/></Suspense>
 }

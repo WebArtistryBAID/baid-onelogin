@@ -1,13 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import React, {useState} from 'react'
+import React, {Suspense, useState} from 'react'
 import {useTranslationClient} from '@/app/i18n/client'
 import {useSearchParams} from 'next/navigation'
 import {loginWithAccessCode} from '@/app/auth/callback/login'
 import If from '@/app/lib/If'
 
-export default function AccessCodePage() {
+function Sub() {
     const {t} = useTranslationClient('auth')
     const search = useSearchParams()
     const [value, setValue] = useState('')
@@ -42,4 +42,8 @@ export default function AccessCodePage() {
         }} disabled={loading} className="mb-3 w-full btn block text-center">{t('loginAccessCode')}</button>
         <Link href="/auth" className="mb-3 w-full btn-secondary block text-center">{t('back')}</Link>
     </div>
+}
+
+export default function AccessCodePage() {
+    return <Suspense><Sub/></Suspense>
 }

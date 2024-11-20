@@ -2,7 +2,7 @@
 
 import {useTranslationClient} from '@/app/i18n/client'
 import {useSearchParams} from 'next/navigation'
-import React, {useEffect, useState} from 'react'
+import React, {Suspense, useEffect, useState} from 'react'
 import {ApplicationSimple, getAppByClientID} from '@/app/lib/app-actions'
 import {Scope, User} from '@prisma/client'
 import {getMe} from '@/app/lib/user-actions'
@@ -16,7 +16,7 @@ import {authorizeSMSForCode, sendVerificationCode} from '@/app/lib/sms-actions'
 import If from '@/app/lib/If'
 import {useInterval} from 'react-interval-hook'
 
-export default function BindPhoneNumber() {
+function Sub() {
     const {t} = useTranslationClient('authorize')
 
     const searchParams = useSearchParams()
@@ -133,4 +133,8 @@ export default function BindPhoneNumber() {
         <a href={`/oauth2/authorize/sms?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')!}`}
            className="text-center w-full btn-secondary">{t('back')}</a>
     </div>
+}
+
+export default function BindPhoneNumber() {
+    return <Suspense><Sub/></Suspense>
 }

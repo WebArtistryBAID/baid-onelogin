@@ -1,23 +1,23 @@
 'use client'
 
-import { useTranslationClient } from '@/app/i18n/client'
-import { useEffect, useState } from 'react'
-import { ApplicationSimple, getAppByID } from '@/app/lib/app-actions'
-import { Authorization } from '@prisma/client'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { getMyAuthByID, getUserNameByID } from '@/app/lib/user-actions'
-import { AppIcon } from '@/app/user/applications/AppIcon'
-import { Trans } from 'react-i18next/TransWithoutContext'
-import { revokeMyAuthorization } from '@/app/lib/authorize-actions'
+import {useTranslationClient} from '@/app/i18n/client'
+import {Suspense, useEffect, useState} from 'react'
+import {ApplicationSimple, getAppByID} from '@/app/lib/app-actions'
+import {Authorization} from '@prisma/client'
+import {useRouter, useSearchParams} from 'next/navigation'
+import {getMyAuthByID, getUserNameByID} from '@/app/lib/user-actions'
+import {AppIcon} from '@/app/user/applications/AppIcon'
+import {Trans} from 'react-i18next/TransWithoutContext'
+import {revokeMyAuthorization} from '@/app/lib/authorize-actions'
 
-export default function ViewAuthorization() {
-    const { t } = useTranslationClient('authorizations')
+function Sub() {
+    const {t} = useTranslationClient('authorizations')
     const searchParams = useSearchParams()
     const router = useRouter()
 
-    const [ app, setApp ] = useState<ApplicationSimple | null>(null)
-    const [ auth, setAuth ] = useState<Authorization | null>(null)
-    const [ ownerName, setOwnerName ] = useState<string | null>(null)
+    const [app, setApp] = useState<ApplicationSimple | null>(null)
+    const [auth, setAuth] = useState<Authorization | null>(null)
+    const [ownerName, setOwnerName] = useState<string | null>(null)
 
     useEffect(() => {
         (async () => {
@@ -27,7 +27,7 @@ export default function ViewAuthorization() {
             setApp(ap)
             setOwnerName(await getUserNameByID(ap!.ownerId))
         })()
-    }, [ searchParams ])
+    }, [searchParams])
 
     if (!auth || !app || !ownerName) {
         return <div className="w-full h-full">
@@ -45,13 +45,13 @@ export default function ViewAuthorization() {
             <AppIcon app={app} size="big" uploadable={false}/>
             <h1 className="mt-3 mb-1">{app.name}</h1>
             <p className="mb-1">
-                <Trans t={t} i18nKey="operatedBy" values={{ owner: ownerName }} components={{ 1: <b></b> }}/>
+                <Trans t={t} i18nKey="operatedBy" values={{owner: ownerName}} components={{1: <b></b>}}/>
             </p>
             <p className="italic mb-5">
                 {app.message}
             </p>
             <p className="text-xs secondary mb-3"
-               dangerouslySetInnerHTML={{ __html: t('info', { createTime: auth.createdAt.toLocaleDateString() }) }}/>
+               dangerouslySetInnerHTML={{__html: t('info', {createTime: auth.createdAt.toLocaleDateString()})}}/>
             <ul className="list-inside list-disc mb-3">
                 {auth.scopes.map(scope => <li key={scope}>{t(`scopeMessages.${scope}`)}</li>)}
             </ul>
@@ -67,4 +67,8 @@ export default function ViewAuthorization() {
             }}>{t('deauthorize')}</button>
         </div>
     </div>
+}
+
+export default function ViewAuthorization() {
+    return <Suspense><Sub/></Suspense>
 }
