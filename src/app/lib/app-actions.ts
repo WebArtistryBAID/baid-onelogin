@@ -306,7 +306,9 @@ export async function uploadAppIcon(formData: FormData): Promise<Application> {
 
     await fsPromise.mkdir(path.join(root!, 'app-icons'), {recursive: true})
 
-    await fsPromise.rm(path.join(root!, app.icon!))
+    if (app.icon != null) {
+        await fsPromise.rm(path.join(root!, app.icon!))
+    }
     const fn = `${app.id}-${randomUUID().toString()}.webp`
     await sharp(Buffer.from(await file.arrayBuffer()))
         .resize({

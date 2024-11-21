@@ -1,10 +1,10 @@
 'use client'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUpload } from '@fortawesome/free-solid-svg-icons'
-import { useRef } from 'react'
-import { useTranslationClient } from '@/app/i18n/client'
-import { ApplicationSimple, uploadAppIcon } from '@/app/lib/app-actions'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faUpload} from '@fortawesome/free-solid-svg-icons'
+import {useRef} from 'react'
+import {useTranslationClient} from '@/app/i18n/client'
+import {ApplicationSimple, uploadAppIcon} from '@/app/lib/app-actions'
 
 export function AppIcon({app, size, uploadable = false}: {
     app: ApplicationSimple,
@@ -24,7 +24,7 @@ export function AppIcon({app, size, uploadable = false}: {
     } else {
         // We are intentionally not using Image because it causes caching issues
         // eslint-disable-next-line @next/next/no-img-element
-        base = <img src={`/${process.env.UPLOAD_SERVE_PATH}${app.icon}`} alt={app.name} width={512} height={512}
+        base = <img src={`/uploads/${app.icon}`} alt={app.name} width={512} height={512}
                     className={`${size == 'small' ? 'w-8 h-8' : 'w-16 h-16'} aspect-square rounded-full object-cover object-center`}/>
     }
     if (uploadable) {
@@ -36,7 +36,6 @@ export function AppIcon({app, size, uploadable = false}: {
             </button>
 
             <form aria-hidden={true} ref={form} action={(data) => {
-                console.log('here')
                 uploadAppIcon(data).then(() => location.reload())
             }} className="hidden">
                 <input type="text" name="id" readOnly={true} value={app.id.toString()} aria-hidden={true}/>
