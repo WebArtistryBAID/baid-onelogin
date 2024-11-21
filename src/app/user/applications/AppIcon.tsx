@@ -18,14 +18,14 @@ export function AppIcon({app, size, uploadable = false}: {
     let base
     if (app.icon == null) {
         base = <div
-            className={`${size == 'small' ? 'w-8 h-8' : 'w-16 h-16'} bg-blue-500 text-white rounded-full flex justify-center items-center p-3`}>
+            className={`${size == 'small' ? 'w-8 h-8' : 'w-16 h-16'} aspect-square bg-blue-500 text-white rounded-full flex justify-center items-center p-3`}>
             <p className={`${size == 'small' ? 'text-sm' : 'text-xl'} font-bold font-display`}>{app.name[0]}</p>
         </div>
     } else {
         // We are intentionally not using Image because it causes caching issues
         // eslint-disable-next-line @next/next/no-img-element
         base = <img src={`/${process.env.UPLOAD_SERVE_PATH}${app.icon}`} alt={app.name} width={512} height={512}
-                    className={`${size == 'small' ? 'w-8 h-8' : 'w-16 h-16'} rounded-full object-cover object-center`}/>
+                    className={`${size == 'small' ? 'w-8 h-8' : 'w-16 h-16'} aspect-square rounded-full object-cover object-center`}/>
     }
     if (uploadable) {
         return <div className={`relative ${size == 'small' ? 'w-8 h-8' : 'w-16 h-16'} rounded-full`}>
