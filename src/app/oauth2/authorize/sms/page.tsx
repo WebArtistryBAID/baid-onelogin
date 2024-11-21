@@ -59,11 +59,11 @@ function Sub() {
             <p className="mb-1 text-center">{t('sms.noPhoneNumber')}</p>
             <p className="secondary text-xs text-center mb-5">{t('sms.standardRates')}</p>
             <button disabled={loading} onClick={() => {
-                router.push(`/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')}`)
+                router.push(`/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}`)
             }} className="btn w-full mb-3">{t('sms.addPhoneNumber')}</button>
             <button disabled={loading} onClick={async () => {
                 setLoading(true)
-                const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!, searchParams.get('csrf')!)
+                const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!)
                 if (code == null) {
                     location.href = `${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+authorization+request+failed${stateParam}`
                 }
@@ -79,18 +79,18 @@ function Sub() {
         <p className="mb-5 text-center text-xl font-bold">{parsePhoneNumber(phone).formatInternational()}</p>
         <button disabled={loading} onClick={async () => {
             setLoading(true)
-            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!, searchParams.get('csrf')!)
+            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!)
             if (code == null) {
                 location.href = `${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+authorization+request+failed${stateParam}`
             }
             location.href = `${searchParams.get('redirect_uri')}?code=${code}${stateParam}`
         }} className="btn w-full mb-3">{t('sms.continue')}</button>
         <button disabled={loading} onClick={() => {
-            router.push(`/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')}`)
-        }} className="btn w-full mb-3">{t('sms.useOtherNumber')}</button>
+            router.push(`/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}`)
+        }} className="btn-secondary w-full mb-3">{t('sms.useOtherNumber')}</button>
         <button disabled={loading} onClick={async () => {
             setLoading(true)
-            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!, searchParams.get('csrf')!)
+            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!)
             if (code == null) {
                 location.href = `${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+authorization+request+failed${stateParam}`
             }

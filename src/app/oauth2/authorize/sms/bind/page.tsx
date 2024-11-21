@@ -1,20 +1,20 @@
 'use client'
 
-import { useTranslationClient } from '@/app/i18n/client'
-import { useSearchParams } from 'next/navigation'
-import React, { Suspense, useEffect, useState } from 'react'
-import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
-import { Scope, User } from '@prisma/client'
-import { getMe } from '@/app/lib/user-actions'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import {useTranslationClient} from '@/app/i18n/client'
+import {useSearchParams} from 'next/navigation'
+import React, {Suspense, useEffect, useState} from 'react'
+import {ApplicationSimple, getAppByClientID} from '@/app/lib/app-actions'
+import {Scope, User} from '@prisma/client'
+import {getMe} from '@/app/lib/user-actions'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faSpinner} from '@fortawesome/free-solid-svg-icons'
 import Error from '@/app/oauth2/authorize/Error'
-import { AppIcon } from '@/app/user/applications/AppIcon'
+import {AppIcon} from '@/app/user/applications/AppIcon'
 import PhoneInput from 'react-phone-number-input/input-mobile'
-import { E164Number } from 'libphonenumber-js'
-import { authorizeSMSForCode, sendVerificationCode } from '@/app/lib/sms-actions'
+import {E164Number} from 'libphonenumber-js'
+import {authorizeSMSForCode, sendVerificationCode} from '@/app/lib/sms-actions'
 import If from '@/app/lib/If'
-import { useInterval } from 'react-interval-hook'
+import {useInterval} from 'react-interval-hook'
 
 function Sub() {
     const {t} = useTranslationClient('authorize')
@@ -88,7 +88,7 @@ function Sub() {
                 const code = await authorizeSMSForCode(value,
                     app.id, scopes.map(s => s as keyof typeof Scope),
                     searchParams.has('state') ? searchParams.get('state') : null,
-                    searchParams.get('redirect_uri')!, searchParams.get('csrf')!)
+                    searchParams.get('redirect_uri')!)
                 if (code == null) {
                     setCodeError(true)
                     return
@@ -132,7 +132,7 @@ function Sub() {
             }
             setLoading(false)
         }}>{retryTimeLeft < 1 ? t('sms.sendVerificationCode') : t('sms.retry', {time: retryTimeLeft})}</button>
-        <a href={`/oauth2/authorize/sms?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}&csrf=${searchParams.get('csrf')!}`}
+        <a href={`/oauth2/authorize/sms?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}`}
            className="text-center w-full btn-secondary">{t('back')}</a>
     </div>
 }
