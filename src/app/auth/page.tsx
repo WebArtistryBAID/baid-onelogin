@@ -1,4 +1,4 @@
-import {useTranslation} from '@/app/i18n'
+import { useTranslation } from '@/app/i18n'
 import Link from 'next/link'
 
 export default async function AuthPage({searchParams}: { searchParams: never }) {
@@ -11,6 +11,6 @@ export default async function AuthPage({searchParams}: { searchParams: never }) 
         <p className="text-center text-sm mb-5">{t('description')}</p>
         <a href={redirect} className="mb-3 w-full btn block text-center">{t('loginSeiue')}</a>
         <Link href={`/auth/code?redirect=${encodeURIComponent(back)}`}
-              className="mb-3 w-full block text-center btn-secondary">{t('loginAccessCode')}</Link>
+              className="mb-3 w-full block text-center secondary text-xs">{t('loginAccessCode')}</Link>
     </div>
 }

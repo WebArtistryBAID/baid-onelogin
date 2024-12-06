@@ -1,17 +1,17 @@
 'use client'
 
-import {AppIcon} from '@/app/user/applications/AppIcon'
-import {useRouter, useSearchParams} from 'next/navigation'
-import {Suspense, useEffect, useState} from 'react'
-import {ApplicationSimple, getAppByClientID} from '@/app/lib/app-actions'
-import {Scope, User} from '@prisma/client'
-import {getMe} from '@/app/lib/user-actions'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faSpinner} from '@fortawesome/free-solid-svg-icons'
+import { AppIcon } from '@/app/user/applications/AppIcon'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
+import { Scope, User } from '@prisma/client'
+import { getMe } from '@/app/lib/user-actions'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import Error from '@/app/oauth2/authorize/Error'
-import {useTranslationClient} from '@/app/i18n/client'
-import {parsePhoneNumber} from 'libphonenumber-js'
-import {authorizeForCode} from '@/app/lib/authorize-actions'
+import { useTranslationClient } from '@/app/i18n/client'
+import { parsePhoneNumber } from 'libphonenumber-js'
+import { authorizeForCode } from '@/app/lib/authorize-actions'
 
 function Sub() {
     // The app will not be able to send SMS notifications if this step is not completed
@@ -87,7 +87,7 @@ function Sub() {
         }} className="btn w-full mb-3">{t('sms.continue')}</button>
         <button disabled={loading} onClick={() => {
             router.push(`/oauth2/authorize/sms/bind?client_id=${searchParams.get('client_id')!}&scope=${searchParams.get('scope')}&redirect_uri=${searchParams.get('redirect_uri')}${stateParam}`)
-        }} className="btn-secondary w-full mb-3">{t('sms.useOtherNumber')}</button>
+        }} className="w-full text-center secondary text-xs mb-3">{t('sms.useOtherNumber')}</button>
         <button disabled={loading} onClick={async () => {
             setLoading(true)
             const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!)
@@ -95,7 +95,7 @@ function Sub() {
                 location.href = `${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+authorization+request+failed${stateParam}`
             }
             location.href = `${searchParams.get('redirect_uri')}?code=${code}${stateParam}`
-        }} className="btn-secondary w-full text-center">{t('sms.continueWithoutNotifications')}</button>
+        }} className="w-full secondary text-xs text-center">{t('sms.continueWithoutNotifications')}</button>
     </div>
 }
 
