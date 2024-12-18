@@ -2,13 +2,17 @@
 
 A more streamlined single sign-on system for BAID's SEIUE login. Built with Next.js.
 
-Because SEIUE's API documentation sucks.
+Because SEIUE's API documentation sucks (yes).
+
+Used by [WebArtistryBAID](https://github.com/WebArtistryBAID)/[**whale-next
+**](https://github.com/WebArtistryBAID/whale-next), [WebArtistryBAID](https://github.com/WebArtistryBAID)/[*
+*baid-speaker**](https://github.com/WebArtistryBAID/baid-speaker), and other third-party services.
 
 ## Get Started
 
 To run in production:
 
-* This is not ready for production yet.
+* Using `pm2` allows for proper deployment in production.
 
 To run in development:
 
