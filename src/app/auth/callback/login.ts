@@ -94,6 +94,7 @@ export default async function login(error: boolean | null, tok: string | null, t
     const userData = {
         seiueId: json['id'],
         name: json['name'],
+        accessToken: tok,
         schoolId: json['usin'],
         pinyin: json['pinyin'] ?? '',
         phone: json['phone'],
