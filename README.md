@@ -4,9 +4,7 @@ A more streamlined single sign-on system for BAID's SEIUE login. Built with Next
 
 Because SEIUE's API documentation sucks (yes).
 
-Used by [WebArtistryBAID](https://github.com/WebArtistryBAID)/[**whale-next
-**](https://github.com/WebArtistryBAID/whale-next), [WebArtistryBAID](https://github.com/WebArtistryBAID)/[*
-*baid-speaker**](https://github.com/WebArtistryBAID/baid-speaker), and other third-party services.
+Used by WebArtistryBAID/[whale-next](https://github.com/WebArtistryBAID/whale-next), WebArtistryBAID/[baid-speaker](https://github.com/WebArtistryBAID/baid-speaker), and other third-party services.
 
 ## Get Started
 
