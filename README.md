@@ -35,6 +35,7 @@ To run in development:
 | `ALIYUN_REGION`            | Aliyun SMS region.                                                                       |
 | `ALIYUN_SIGNATURE_NAME`    | Signature name for SMS on Aliyun.                                                        |
 | `ALIYUN_TEMPLATE_CODE_SMS` | Template code for sending verification codes in Aliyun SMS.                              |
+| `SKIP_SMS`                 | `true` if needed to skip sending SMS.                                                    |
 
 * Run `npm run dev`.
 
