@@ -47,12 +47,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
                 lastSMSPhone: phoneFirst
             }
         })
-        await aliyun.sendSms(new SendSmsRequest({
-            phoneNumbers: phoneFirst,
-            signName: process.env.ALIYUN_SIGNATURE_NAME!,
-            templateCode: body.template,
-            templateParam: JSON.stringify(body.params)
-        }))
+        if (process.env.SKIP_SMS !== 'true') {
+            await aliyun.sendSms(new SendSmsRequest({
+                phoneNumbers: phoneFirst,
+                signName: process.env.ALIYUN_SIGNATURE_NAME!,
+                templateCode: body.template,
+                templateParam: JSON.stringify(body.params)
+            }))
+        }
     } catch (e) {
         console.error(`[SMS] While sending SMS to ${authorization.smsPhone} for user ${user.name}:`)
         console.error(e)

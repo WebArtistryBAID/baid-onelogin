@@ -32,14 +32,16 @@ export async function sendVerificationCode(phone: string): Promise<boolean> {
 
     const correctCode = randomInt(100000, 999999)
     try {
-        await aliyun.sendSms(new SendSmsRequest({
-            phoneNumbers: phoneFirst,
-            signName: process.env.ALIYUN_SIGNATURE_NAME!,
-            templateCode: process.env.ALIYUN_TEMPLATE_CODE_SMS!,
-            templateParam: JSON.stringify({
-                code: correctCode
-            })
-        }))
+        if (process.env.SKIP_SMS !== 'true') {
+            await aliyun.sendSms(new SendSmsRequest({
+                phoneNumbers: phoneFirst,
+                signName: process.env.ALIYUN_SIGNATURE_NAME!,
+                templateCode: process.env.ALIYUN_TEMPLATE_CODE_SMS!,
+                templateParam: JSON.stringify({
+                    code: correctCode
+                })
+            }))
+        }
         console.log(`[Authorization] Sending SMS to ${phone}: ${correctCode}`)
 
         await prisma.user.update({
