@@ -435,3 +435,27 @@ export async function validateAccessToken(accessToken: string, scope: string[]):
         return false
     }
 }
+
+export async function authorizationFromHeader(request: NextRequest): Promise<Authorization | null> {
+    const auth = request.headers.get('Authorization')
+    if (auth == null || !auth.startsWith('Bearer ')) {
+        return null
+    }
+
+    try {
+        const jwt = await jwtVerify(auth.replace('Bearer ', ''), secret)
+
+        if (jwt.payload.type !== 'access_token') {
+            return null
+        }
+
+        return await prisma.authorization.findFirst({
+            where: {
+                userId: jwt.payload.user as number,
+                applicationId: jwt.payload.app as number
+            }
+        })
+    } catch {
+        return null
+    }
+}
