@@ -11,7 +11,7 @@ import { NextRequest } from 'next/server'
 const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
 
-export async function authorizeForCode(application: number, scopes: Scope[], state: string | null, redirectURI: string): Promise<string | null> {
+export async function authorizeForCode(application: number, scopes: Scope[], state: string | null, redirectURI: string, includePhone: boolean = false): Promise<string | null> {
     const me = await getMe()
     if (!me) {
         return null
@@ -40,7 +40,7 @@ export async function authorizeForCode(application: number, scopes: Scope[], sta
         app: app.id,
         scopes: scopes.map(s => s.toString()),
         state: state,
-        phone: null,
+        phone: includePhone ? (me.phone == null ? null : `+86${me.phone}`) : null,
         redirectURI,
         type: 'authorization_code'
     })
@@ -133,7 +133,7 @@ export async function authorizeForTokens(code: string, credentials: string, gran
             },
             data: {
                 scopes: jwt.payload.scopes as string[],
-                smsPhone: jwt.payload.phone as string | null
+                smsPhone: jwt.payload.phone as (string | null)
             }
         })
     } else {
@@ -142,7 +142,7 @@ export async function authorizeForTokens(code: string, credentials: string, gran
                 userId: jwt.payload.user as number,
                 applicationId: jwt.payload.app as number,
                 scopes: jwt.payload.scopes as string[],
-                smsPhone: jwt.payload.phone as string | null
+                smsPhone: jwt.payload.phone as (string | null)
             }
         })
     }

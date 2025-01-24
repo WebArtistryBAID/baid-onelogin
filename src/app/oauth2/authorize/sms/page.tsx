@@ -79,7 +79,7 @@ function Sub() {
         <p className="mb-5 text-center text-xl font-bold">{parsePhoneNumber(phone).formatInternational()}</p>
         <button disabled={loading} onClick={async () => {
             setLoading(true)
-            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!)
+            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!, true)
             if (code == null) {
                 location.href = `${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+authorization+request+failed${stateParam}`
             }
