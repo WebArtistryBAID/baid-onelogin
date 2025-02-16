@@ -1,9 +1,9 @@
 'use server'
 
-import {cookies, headers} from 'next/headers'
-import {SignJWT} from 'jose'
-import {Gender, PrismaClient, UserAuditLogType, UserType} from '@prisma/client'
-import {createSecretKey} from 'node:crypto'
+import { cookies, headers } from 'next/headers'
+import { SignJWT } from 'jose'
+import { Gender, PrismaClient, UserAuditLogType, UserType } from '@prisma/client'
+import { createSecretKey } from 'node:crypto'
 
 const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
@@ -90,6 +90,10 @@ export default async function login(error: boolean | null, tok: string | null, t
             seiueId: json['id']
         }
     })
+
+    if (json['role'] === 'parent') {
+        return '/auth/callback/parent'
+    }
 
     const userData = {
         seiueId: json['id'],
