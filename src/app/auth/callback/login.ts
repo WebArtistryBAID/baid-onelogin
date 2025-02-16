@@ -92,7 +92,7 @@ export default async function login(error: boolean | null, tok: string | null, t
     })
 
     if (json['role'] === 'guardian') {
-        return '/auth/callback/parent'
+        return '/auth/parent'
     }
 
     const userData = {
