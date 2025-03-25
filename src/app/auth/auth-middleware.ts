@@ -18,7 +18,7 @@ export default async function authMiddleware(req: NextRequest): Promise<NextResp
     if (!protectedRoutes.includes(path)) {
         return null
     }
-    const cookie = cookies().get('access_token')?.value
+    const cookie = (await cookies()).get('access_token')?.value
     if (cookie == null) {
         return NextResponse.redirect(new URL(`/auth?redirect=${encodeURIComponent(req.nextUrl.pathname + req.nextUrl.search)}`, req.nextUrl))
     }

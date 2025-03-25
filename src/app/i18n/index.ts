@@ -18,8 +18,8 @@ const initI18next = async (lng: string, ns: string) => {
 
 export async function useTranslation(ns: string) {
     let lng
-    if (cookies().has(cookieName)) lng = acceptLanguage.get(cookies().get(cookieName)!.value)
-    if (!lng) lng = acceptLanguage.get(headers().get('Accept-Language'))
+    if ((await cookies()).has(cookieName)) lng = acceptLanguage.get((await cookies()).get(cookieName)!.value)
+    if (!lng) lng = acceptLanguage.get((await headers()).get('Accept-Language'))
     if (!lng) lng = getOptions().fallbackLng
 
     const i18nextInstance = await initI18next(lng, ns)

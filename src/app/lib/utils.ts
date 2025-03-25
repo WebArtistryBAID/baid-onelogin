@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers'
-import { decodeJwt, jwtVerify } from 'jose'
+import {cookies} from 'next/headers'
+import {decodeJwt, jwtVerify} from 'jose'
 
 export async function findUserOrThrow(): Promise<number> {
     const user = await findUserInternalCookie()
@@ -10,10 +10,10 @@ export async function findUserOrThrow(): Promise<number> {
 }
 
 export async function findUserInternalCookie(): Promise<number | null> {
-    if (!cookies().has('access_token')) {
+    if (!(await cookies()).has('access_token')) {
         return null
     }
-    return findUserInternal(cookies().get('access_token')!.value)
+    return findUserInternal((await cookies()).get('access_token')!.value)
 }
 
 // Used for internal purposes, find user based on cookies

@@ -1,15 +1,15 @@
 'use server'
 
-import { cookies, headers } from 'next/headers'
-import { SignJWT } from 'jose'
-import { Gender, PrismaClient, UserAuditLogType, UserType } from '@prisma/client'
-import { createSecretKey } from 'node:crypto'
+import {cookies, headers} from 'next/headers'
+import {SignJWT} from 'jose'
+import {Gender, PrismaClient, UserAuditLogType, UserType} from '@prisma/client'
+import {createSecretKey} from 'node:crypto'
 
 const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
 
 export async function loginWithAccessCode(code: string): Promise<boolean> {
-    const head = headers()
+    const head = await headers()
     const ip = head.get('X-Forwarded-For') ?? head.get('X-Real-IP') ?? 'localhost'
     if (code.length < 1) {
         return false
@@ -55,15 +55,15 @@ export async function loginWithAccessCode(code: string): Promise<boolean> {
         .setAudience('https://beijing.academy')
         .setExpirationTime('1 day')
         .setProtectedHeader({alg: 'HS256'})
-        .sign(secret)
-    cookies().set('access_token', token, {
+        .sign(secret);
+    (await cookies()).set('access_token', token, {
         expires: new Date(Date.now() + 86400000)
     })
     return true
 }
 
 export default async function login(error: boolean | null, tok: string | null, target: string): Promise<string> {
-    const head = headers()
+    const head = await headers()
     const ip = head.get('X-Forwarded-For') ?? head.get('X-Real-IP') ?? 'localhost'
 
     if (error) {
@@ -147,8 +147,8 @@ export default async function login(error: boolean | null, tok: string | null, t
         .setAudience('https://beijing.academy')
         .setExpirationTime('1 day')
         .setProtectedHeader({alg: 'HS256'})
-        .sign(secret)
-    cookies().set('access_token', token, {
+        .sign(secret);
+    (await cookies()).set('access_token', token, {
         expires: new Date(Date.now() + 86400000)
     })
 

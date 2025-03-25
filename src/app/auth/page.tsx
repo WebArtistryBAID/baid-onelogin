@@ -1,9 +1,9 @@
-import { useTranslation } from '@/app/i18n'
+import {useTranslation} from '@/app/i18n'
 import Link from 'next/link'
 
 export default async function AuthPage({searchParams}: { searchParams: never }) {
     const {t} = await useTranslation('auth')
-    const back = searchParams['redirect'] || '/'
+    const back = (await searchParams)['redirect'] || '/'
     const redirect = `https://passport.seiue.com/authorize?response_type=token&client_id=${process.env.SEIUE_CLIENT_ID}&school_id=452&scope=reflection.read_basic&redirect_uri=${encodeURIComponent(`${process.env.HOSTED}/auth/callback?redirect=${encodeURIComponent(back)}`)}`
 
     return <div className="simple-container flex flex-col justify-center items-center">

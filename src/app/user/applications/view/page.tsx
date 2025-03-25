@@ -53,7 +53,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
 
     useEffect(() => {
         (async () => {
-            const a = await getMyAppByIDSecure(parseInt(searchParams['app']))
+            const a = await getMyAppByIDSecure(parseInt((await searchParams)['app']))
             if (a == null) {
                 router.push('/user/applications')
                 return
@@ -68,7 +68,8 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
             setMe(await getMe())
             setEAR(await getApprovalRequestForApp(a.id))
         })()
-    }, [router, searchParams])
+    }, [router,
+        searchParams])
 
     if (app == null || me == null) {
         return <div>
