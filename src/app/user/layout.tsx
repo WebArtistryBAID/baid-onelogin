@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCode, faHome, faStamp, faTicket } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faRightFromBracket, faTicket } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from '@/app/i18n'
 import Link from 'next/link'
-import { getMe } from '@/app/lib/user-actions'
-import If from '@/app/lib/If'
+import Branding from '@/app/lib/Branding'
+import DeveloperTools from '@/app/user/DeveloperTools'
 
 export default async function UserLayout({
     children
@@ -11,10 +11,10 @@ export default async function UserLayout({
     children: React.ReactNode;
 }>) {
     const { t } = await useTranslation('home')
-    const me = await getMe()
 
     return <main>
-        <div className="base-container">
+        <div className="base-container relative">
+            <Branding/>
             <div className="base-nav">
                 <Link href="/user" className="nav-item">
                     <div className="nav-image">
@@ -28,21 +28,13 @@ export default async function UserLayout({
                     </div>
                     <p className="nav-content">{t('nav.authorizations')}</p>
                 </Link>
-                <p className="text-xs text-center mt-5 mb-2 secondary lg:block hidden">{t('nav.developers')}</p>
-                <Link href="/user/applications" className="nav-item">
+                <Link href="/user/logout" className="nav-item">
                     <div className="nav-image">
-                        <FontAwesomeIcon icon={faCode} aria-label={t('nav.applications')}/>
+                        <FontAwesomeIcon icon={faRightFromBracket} aria-label={t('nav.logout')}/>
                     </div>
-                    <p className="nav-content">{t('nav.applications')}</p>
+                    <p className="nav-content">{t('nav.logout')}</p>
                 </Link>
-                <If condition={me.admin}>
-                    <Link href="/user/approvals" className="nav-item">
-                        <div className="nav-image">
-                            <FontAwesomeIcon icon={faStamp} aria-label={t('nav.approval')}/>
-                        </div>
-                        <p className="nav-content">{t('nav.approval')}</p>
-                    </Link>
-                </If>
+                <DeveloperTools/>
             </div>
             <div className="base-content">
                 {children}

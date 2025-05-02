@@ -11,6 +11,9 @@ const config: Config = {
             fontFamily: {
                 display: [ 'var(--font-inter)', 'var(--font-noto-sans-sc)', 'BlinkMacSystemFont', '-apple-system', 'Segoe UI', 'Helvetica Neue', 'sans-serif' ],
                 body: [ 'var(--font-inter)', 'var(--font-noto-sans-sc)', 'BlinkMacSystemFont', '-apple-system', 'Segoe UI', 'Helvetica Neue', 'sans-serif' ]
+            },
+            colors: {
+                'base-red': '#83060e'
             }
         }
     },

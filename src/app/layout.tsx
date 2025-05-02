@@ -10,7 +10,7 @@ import If from '@/app/lib/If'
 config.autoAddCss = false
 
 export const metadata: Metadata = {
-    title: 'OneLogin',
+    title: 'LinkBAID',
     description: 'A streamlined authentication platform.'
 }
 

@@ -5,61 +5,16 @@ export default async function Home() {
     const {t} = await useTranslation('home')
     const user = await getMe()
 
-    return <div>
-        <h1 className="mb-3">{t('welcome')}</h1>
-        <p className="mb-5">{t('intro')}</p>
+    return <div className="p-4 md:p-8 lg:p-12 xl:p-16">
+        <h1 className="w-full text-center !font-normal mb-5 lg:mb-8">
+            {t('welcome', { name: user.name })}
+        </h1>
 
-        <div
-            className="flex flex-col lg:flex-row w-full lg:justify-start lg:text-left text-center justify-center items-center mb-3">
-            <div
-                className="bg-blue-500 text-white rounded-full w-16 h-16 flex justify-center items-center mb-3 lg:mb-0 lg:mr-3 p-5">
-                <p className="text-xl font-bold font-display">{user.name[0]}</p>
-            </div>
-            <div>
-                <p className="text-xl font-bold font-display">{user.name}</p>
-                <p className="text-sm">{user.pinyin}</p>
-            </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <a href="https://bjzxgjb.seiue.com" className="app-block">
+                <img src="/images/seiue.webp" className="rounded-full w-16 h-16 mb-3" alt=""/>
+                <p className="text-lg">{t('seiue')}</p>
+            </a>
         </div>
-
-        <p className="text-sm secondary">{t('userInfo')}</p>
-        <table className="w-full">
-            <tbody>
-                <tr className="w-full">
-                    <th className="w-1/3 text-left">{t('seiueId')}</th>
-                    <td className="w-2/3">{user.seiueId}</td>
-                </tr>
-                <tr className="w-full">
-                    <th className="w-1/3 text-left">{t('schoolId')}</th>
-                    <td className="w-2/3">{user.schoolId}</td>
-                </tr>
-                <tr className="w-full">
-                    <th className="w-1/3 text-left">{t('phone')}</th>
-                    <td className="w-2/3">{user.phone ?? t('none')}</td>
-                </tr>
-                <tr className="w-full">
-                    <th className="w-1/3 text-left">{t('adminClass0')}</th>
-                    <td className="w-2/3">{user.adminClass0 ?? t('notApplicable')}</td>
-                </tr>
-                <tr className="w-full">
-                    <th className="w-1/3 text-left">{t('classTeacher0')}</th>
-                    <td className="w-2/3">{user.classTeacher0 ?? t('notApplicable')}</td>
-                </tr>
-                <tr className="w-full">
-                    <th className="w-1/3 text-left">{t('gender')}</th>
-                    <td className="w-2/3">{{
-                        'male': t('male'),
-                        'female': t('female'),
-                        'others': t('others')
-                    }[user.gender]}</td>
-                </tr>
-                <tr className="w-full">
-                    <th className="w-1/3 text-left">{t('type')}</th>
-                    <td className="w-2/3">{{
-                        'student': t('student'),
-                        'teacher': t('teacher')
-                    }[user.type]}</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 }

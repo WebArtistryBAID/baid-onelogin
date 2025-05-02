@@ -1,13 +1,11 @@
 {
-  "oneLogin": "BAID.OneLogin",
-  "oneLoginSecondary": "One Login, All of BAID",
   "title": "Authorization",
   "message": "Do you want to authorize <1>{{name}}</1> to access your account?",
   "scopeMessages": {
     "basic": "This application will access your profile information.",
     "phone": "This application will access your phone number.",
     "calendar": "This application will access your calendar.",
-    "sms": "This application will send you SMS notifications.",
+    "sms": "(Deprecated)",
     "noPassword": "This application will <1>not</1> be able to access your password."
   },
   "error": "An error occurred",
@@ -18,26 +16,8 @@
   "errorScope": "We're sorry, but there is an error with your request. The scope you have requested are not approved.",
   "errorRedirectURI": "We're sorry, but there is an error with your request. The redirect URI you have requested is not approved.",
   "back": "Back",
-  "appInfo": "{{name}} is owned by {{owner}} and is not affiliated with OneLogin and SEIUE. You should check {{name}}'s <1>Terms of Service</1> and <2>Privacy Policy</2> before proceeding.",
+  "appInfo": "{{name}} is owned by {{owner}}. You should check {{name}}'s <1>Terms of Service</1> and <2>Privacy Policy</2> before proceeding.",
   "approve": "Authorize",
   "cancel": "Cancel",
-  "authorizing": "Authorizing...",
-  "sms": {
-    "title": "SMS Notifications",
-    "noPhoneNumber": "Do you want to add a phone number for this application?",
-    "confirmPhoneNumber": "Is this the phone number you wish to receive SMS notifications with?",
-    "standardRates": "Standard rates may apply. Check with your carrier for details.",
-    "enterPhoneNumber": "Please enter your phone number to receive SMS notifications.",
-    "verifyError": "You are verifying too quickly. Please try again later.",
-    "codeError": "This code is incorrect or expired.",
-    "sent": "We have sent a verification code to your phone number, please enter it below.",
-    "phoneNumber": "Phone Number",
-    "sendVerificationCode": "Send Verification Code",
-    "china": "China +86",
-    "addPhoneNumber": "Add Phone Number",
-    "continue": "Continue",
-    "retry": "You can retry in {{time}} seconds",
-    "useOtherNumber": "Use Another Phone Number",
-    "continueWithoutNotifications": "Continue Without Notifications"
-  }
+  "authorizing": "Authorizing..."
 }

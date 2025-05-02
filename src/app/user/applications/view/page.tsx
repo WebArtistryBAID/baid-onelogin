@@ -1,6 +1,6 @@
 'use client'
 
-import {redirect, useRouter} from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import {
     createApprovalRequest,
     deleteApp,
@@ -10,14 +10,14 @@ import {
     setAppApprovalStatus,
     updateApp
 } from '@/app/lib/app-actions'
-import {AppIcon} from '@/app/user/applications/AppIcon'
-import {getMe, getUserNameByID} from '@/app/lib/user-actions'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCopy} from '@fortawesome/free-regular-svg-icons'
-import {useTranslationClient} from '@/app/i18n/client'
-import {useEffect, useState} from 'react'
-import {$Enums, Application, ApprovalRequest, ApprovalStatus, User} from '@prisma/client'
-import {faClose, faRefresh, faWarning} from '@fortawesome/free-solid-svg-icons'
+import { AppIcon } from '@/app/user/applications/AppIcon'
+import { getMe, getUserNameByID } from '@/app/lib/user-actions'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopy } from '@fortawesome/free-regular-svg-icons'
+import { useTranslationClient } from '@/app/i18n/client'
+import { useEffect, useState } from 'react'
+import { $Enums, Application, ApprovalRequest, ApprovalStatus, User } from '@prisma/client'
+import { faClose, faRefresh, faWarning } from '@fortawesome/free-solid-svg-icons'
 import If from '@/app/lib/If'
 import Scope = $Enums.Scope
 
@@ -74,12 +74,12 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
     if (app == null || me == null) {
         return <div>
             <h1 className="mb-5">{t('view.title')}</h1>
-            <div className="rounded-3xl bg-secondary w-1/2 h-8 mb-2"></div>
-            <div className="rounded-3xl bg-secondary w-full h-8 mb-2"></div>
-            <div className="rounded-3xl bg-secondary w-full h-8 mb-5"></div>
-            <div className="rounded-3xl bg-secondary w-2/3 h-8 mb-2"></div>
-            <div className="rounded-3xl bg-secondary w-full h-8 mb-2"></div>
-            <div className="rounded-3xl bg-secondary w-full h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-1/2 h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-full h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-full h-8 mb-5"></div>
+            <div className="rounded bg-secondary w-2/3 h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-full h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-full h-8 mb-2"></div>
         </div>
     }
 
@@ -136,7 +136,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
         </If>
 
         <p className="text-sm secondary mb-1">{t('view.clientId')}</p>
-        <pre className="rounded-3xl bg-secondary p-3 mb-3 relative w-full overflow-x-auto">
+        <pre className="rounded bg-secondary p-3 mb-3 relative w-full overflow-x-auto">
             {app!.clientId}
 
             <button className="absolute right-3 top-2 icon-btn h-8 w-8"
@@ -152,7 +152,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
 
         <p className="text-sm secondary mb-1">{t('view.clientSecret')}</p>
         {secret != null
-            ? <pre className="rounded-3xl bg-secondary p-3 mb-1 relative w-full overflow-x-auto">
+            ? <pre className="rounded bg-secondary p-3 mb-1 relative w-full overflow-x-auto">
                 {secret}
 
                 <button className="absolute right-3 top-2 icon-btn h-8 w-8"
@@ -165,7 +165,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                                      className={`${copiedHighlightSecret ? 'text-green-400' : ''} transition-colors duration-100`}/>
                 </button>
             </pre>
-            : <pre className="rounded-3xl bg-secondary p-3 mb-1 relative w-full overflow-x-auto">
+            : <pre className="rounded bg-secondary p-3 mb-1 relative w-full overflow-x-auto">
                 *******
 
                 <button className="absolute right-3 top-2 icon-btn h-8 w-8"
@@ -201,7 +201,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
 
         <p className="text-sm secondary mb-1">{t('view.redirect')}</p>
         {redirectURIs.map((url, i) =>
-            <pre key={i} className="rounded-3xl bg-secondary p-3 mb-1 relative w-full overflow-x-auto">
+            <pre key={i} className="rounded bg-secondary p-3 mb-1 relative w-full overflow-x-auto">
                 {url}
 
                 <button onClick={() => {
@@ -250,7 +250,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
         <If condition={me.admin && existingApprovalRequest != null}>
             <div
                 className={`sticky bottom-0 w-full z-30`}>
-                <div className="w-full flex items-center rounded-full bg-secondary shadow-lg">
+                <div className="w-full flex items-center rounded bg-secondary shadow-lg">
                     <button onClick={async () => {
                         await setAppApprovalStatus(app.id, ApprovalStatus.rejected)
                         location.reload()
@@ -266,7 +266,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
 
         <div
             className={`sticky bottom-0 w-full transition-opacity duration-100 ${deleteConfirm ? 'z-30 opacity-100' : 'opacity-0'}`}>
-            <div className="w-full flex items-center rounded-full bg-secondary shadow-lg pl-3">
+            <div className="w-full flex items-center rounded bg-secondary shadow-lg pl-3">
                 <FontAwesomeIcon icon={faWarning} className="flex-shrink mr-3"/>
                 <p className="flex-grow py-3">{t('view.deleteConfirm')}</p>
                 <button onClick={() => {
@@ -283,7 +283,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
 
         <div
             className={`sticky bottom-0 w-full transition-opacity duration-100 ${unsaved ? 'z-30 opacity-100' : 'opacity-0'}`}>
-            <div className="w-full flex items-center rounded-full bg-secondary shadow-lg pl-3">
+            <div className="w-full flex items-center rounded bg-secondary shadow-lg pl-3">
                 <FontAwesomeIcon icon={faWarning} className="flex-shrink mr-3"/>
                 <p className="flex-grow py-3">{app.approved === ApprovalStatus.approved ? t('view.changesApproved') : t('view.changes')}</p>
                 <button onClick={() => {
@@ -299,6 +299,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                 <button disabled={saveLoading} onClick={async () => {
                     setSaveLoading(true)
                     const a = await updateApp({
+                        id: app.id,
                         message,
                         terms,
                         privacy,

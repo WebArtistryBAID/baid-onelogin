@@ -1,16 +1,31 @@
-import {useTranslation} from '@/app/i18n'
+import { useTranslation } from '@/app/i18n'
 import Link from 'next/link'
+import Branding from '@/app/lib/Branding'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGlobeAsia } from '@fortawesome/free-solid-svg-icons'
 
 export default async function AuthPage({searchParams}: { searchParams: never }) {
     const {t} = await useTranslation('auth')
     const back = (await searchParams)['redirect'] || '/'
     const redirect = `https://passport.seiue.com/authorize?response_type=token&client_id=${process.env.SEIUE_CLIENT_ID}&school_id=452&scope=reflection.read_basic&redirect_uri=${encodeURIComponent(`${process.env.HOSTED}/auth/callback?redirect=${encodeURIComponent(back)}`)}`
 
-    return <div className="simple-container flex flex-col justify-center items-center">
-        <h1 className="mb-1 text-center">{t('onelogin')}</h1>
-        <p className="text-center text-sm mb-5">{t('description')}</p>
-        <a href={redirect} className="mb-3 w-full btn block text-center">{t('loginSeiue')}</a>
-        <Link href={`/auth/code?redirect=${encodeURIComponent(back)}`}
-              className="mb-3 w-full block text-center secondary text-xs">{t('loginAccessCode')}</Link>
+    return <div className="simple-container">
+        <Branding/>
+        <div className="p-5 w-full h-full flex flex-col justify-center items-center">
+            <h1 className="mb-1">{t('title')}</h1>
+            <p className="mb-5 text-sm">{t('description')}</p>
+            <div className="flex flex-col gap-3 w-full">
+                <a href={redirect}
+                   className="flex items-center gap-3 bg-gray-50 rounded  dark:bg-gray-800 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
+                    <img alt="" src="/images/seiue.webp" className="w-8 h-8 rounded-full"/>
+                    <p>{t('loginSeiue')}</p>
+                </a>
+                <Link href={`/auth/code?redirect=${encodeURIComponent(back)}`}
+                      className="flex items-center gap-3 bg-gray-50 rounded  dark:bg-gray-800 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
+                    <FontAwesomeIcon icon={faGlobeAsia} className="w-8 h-8"/>
+                    <p>{t('loginAccessCode')}</p>
+                </Link>
+            </div>
+        </div>
     </div>
 }

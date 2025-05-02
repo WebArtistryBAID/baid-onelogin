@@ -1,14 +1,14 @@
 'use client'
 
-import {useTranslationClient} from '@/app/i18n/client'
-import {Suspense, useEffect, useState} from 'react'
-import {ApplicationSimple, getAppByID} from '@/app/lib/app-actions'
-import {Authorization} from '@prisma/client'
-import {useRouter, useSearchParams} from 'next/navigation'
-import {getMyAuthByID, getUserNameByID} from '@/app/lib/user-actions'
-import {AppIcon} from '@/app/user/applications/AppIcon'
-import {Trans} from 'react-i18next/TransWithoutContext'
-import {revokeMyAuthorization} from '@/app/lib/authorize-actions'
+import { useTranslationClient } from '@/app/i18n/client'
+import { Suspense, useEffect, useState } from 'react'
+import { ApplicationSimple, getAppByID } from '@/app/lib/app-actions'
+import { Authorization } from '@prisma/client'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { getMyAuthByID, getUserNameByID } from '@/app/lib/user-actions'
+import { AppIcon } from '@/app/user/applications/AppIcon'
+import { Trans } from 'react-i18next/TransWithoutContext'
+import { revokeMyAuthorization } from '@/app/lib/authorize-actions'
 
 function Sub() {
     const {t} = useTranslationClient('authorizations')
@@ -31,12 +31,12 @@ function Sub() {
 
     if (!auth || !app || !ownerName) {
         return <div className="w-full h-full">
-            <div className="rounded-3xl bg-secondary w-1/2 h-8 mb-2"></div>
-            <div className="rounded-3xl bg-secondary w-full h-8 mb-2"></div>
-            <div className="rounded-3xl bg-secondary w-full h-8 mb-5"></div>
-            <div className="rounded-3xl bg-secondary w-2/3 h-8 mb-2"></div>
-            <div className="rounded-3xl bg-secondary w-full h-8 mb-2"></div>
-            <div className="rounded-3xl bg-secondary w-full h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-1/2 h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-full h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-full h-8 mb-5"></div>
+            <div className="rounded bg-secondary w-2/3 h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-full h-8 mb-2"></div>
+            <div className="rounded bg-secondary w-full h-8 mb-2"></div>
         </div>
     }
 

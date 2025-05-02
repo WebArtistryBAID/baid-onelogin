@@ -2,6 +2,7 @@
 
 import { Application, Authorization, Gender, PrismaClient, User, UserType } from '@prisma/client'
 import { findUserOrThrow } from '@/app/lib/utils'
+import { cookies } from 'next/headers'
 
 const prisma = new PrismaClient()
 
@@ -95,4 +96,9 @@ export async function getMyAppsSecure(): Promise<Application[]> {
         app.clientSecret = ''
         return app
     })
+}
+
+export async function logOut(): Promise<void> {
+    const c = await cookies()
+    c.delete('access_token')
 }

@@ -1,27 +1,14 @@
 {
   "nav": {
-    "home": "用户信息",
+    "home": "主页",
     "applications": "应用",
     "developers": "开发者",
     "authorizations": "已授权应用",
     "organizations": "组织",
-    "approval": "审批"
+    "approval": "审批",
+    "logout": "退出登录"
   },
-  "welcome": "OneLogin",
-  "intro": "OneLogin 是统一的北京中学国际部服务验证平台。",
-  "userInfo": "用户信息",
-  "seiueId": "希悦用户 ID",
-  "schoolId": "学工号",
-  "phone": "手机号码",
-  "none": "无",
-  "notApplicable": "不适用",
-  "adminClass0": "行政班",
-  "classTeacher0": "行政班教师",
-  "gender": "性别",
-  "male": "男",
-  "female": "女",
-  "others": "其他",
-  "type": "用户类型",
-  "student": "学生",
-  "teacher": "教师"
+  "welcome": "欢迎回来，{{name}}!",
+  "seiue": "希悦校园",
+  "wait": "请稍等..."
 }

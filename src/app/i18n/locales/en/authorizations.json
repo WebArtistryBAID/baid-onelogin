@@ -8,7 +8,7 @@
     "basic": "This application can access your profile information.",
     "phone": "This application can access your phone number.",
     "calendar": "This application can access your calendar.",
-    "sms": "This application can send you SMS notifications."
+    "sms": "(Deprecated)"
   },
   "deauthorize": "Revoke Authorization"
 }

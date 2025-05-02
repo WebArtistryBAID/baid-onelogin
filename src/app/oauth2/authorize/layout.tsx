@@ -1,3 +1,5 @@
+import Branding from '@/app/lib/Branding'
+
 export default async function AuthorizeLayout({
     children
 }: Readonly<{
@@ -5,6 +7,7 @@ export default async function AuthorizeLayout({
 }>) {
     return <main>
         <div className="simple-container">
+            <Branding/>
             {children}
         </div>
     </main>

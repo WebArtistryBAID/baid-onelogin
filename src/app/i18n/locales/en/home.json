@@ -1,27 +1,14 @@
 {
   "nav": {
-    "home": "Onboarding",
+    "home": "Home",
     "applications": "Applications",
     "developers": "For Developers",
     "authorizations": "Authorizations",
     "organizations": "Organizations",
-    "approval": "Approvals"
+    "approval": "Approvals",
+    "logout": "Log Out"
   },
-  "welcome": "OneLogin",
-  "intro": "OneLogin is a streamlined authentication platform for BAID services.",
-  "userInfo": "User Information",
-  "seiueId": "SEIUE User ID",
-  "schoolId": "School ID",
-  "phone": "Phone Number",
-  "none": "None",
-  "notApplicable": "N/A",
-  "adminClass0": "Administrative Class",
-  "classTeacher0": "Teacher",
-  "gender": "Gender",
-  "male": "Male",
-  "female": "Female",
-  "others": "Others",
-  "type": "User Type",
-  "student": "Student",
-  "teacher": "Teacher"
+  "welcome": "Welcome back, {{name}}!",
+  "seiue": "SEIUE",
+  "wait": "Please wait..."
 }

@@ -132,8 +132,7 @@ export async function authorizeForTokens(code: string, credentials: string, gran
                 applicationId: jwt.payload.app as number
             },
             data: {
-                scopes: jwt.payload.scopes as string[],
-                smsPhone: jwt.payload.phone as (string | null)
+                scopes: jwt.payload.scopes as string[]
             }
         })
     } else {
@@ -141,8 +140,7 @@ export async function authorizeForTokens(code: string, credentials: string, gran
             data: {
                 userId: jwt.payload.user as number,
                 applicationId: jwt.payload.app as number,
-                scopes: jwt.payload.scopes as string[],
-                smsPhone: jwt.payload.phone as (string | null)
+                scopes: jwt.payload.scopes as string[]
             }
         })
     }
