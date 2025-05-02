@@ -311,6 +311,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                     const a = await updateApp({
                         id: app.id,
                         message,
+                        homepage,
                         terms,
                         privacy,
                         redirectUrls: redirectURIs,
