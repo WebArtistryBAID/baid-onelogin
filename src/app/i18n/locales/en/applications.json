@@ -6,6 +6,7 @@
     "title": "Create Application",
     "responsibility": "You will be assigned as the owner of the application and will take responsibility for actions performed with your application. Your application must be approved before users can authorize.",
     "nameInput": "Application Name",
+    "homepageInput": "Homepage URI",
     "create": "Create",
     "cancel": "Cancel"
   },
@@ -35,6 +36,7 @@
     "authorization": "Authorizations",
     "viewAuthorizations": "View Authorizations",
     "redirect": "Redirect URIs",
+    "homepage": "Homepage URI",
     "terms": "Terms of Service Link",
     "privacy": "Privacy Policy Link",
     "scopes": "Scopes",

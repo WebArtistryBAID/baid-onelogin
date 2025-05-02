@@ -33,6 +33,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
     const [ secret, setSecret ] = useState<string | null>('secret' in searchParams ? searchParams['secret'] : null)
 
     const [ message, setMessage ] = useState('')
+    const [ homepage, setHomepage ] = useState('')
     const [ terms, setTerms ] = useState('')
     const [ privacy, setPrivacy ] = useState('')
     const [ redirectURIs, setRedirectURIs ] = useState<string[]>([])
@@ -60,6 +61,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
             }
             getUserNameByID(a.ownerId).then(setOwnerName)
             setMessage(a.message)
+            setHomepage(a.homepage)
             setTerms(a.terms ?? '')
             setPrivacy(a.privacy ?? '')
             setRedirectURIs(a.redirectUrls)
@@ -185,6 +187,13 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                }} value={message}/>
         <p className="text-xs secondary mb-3">{t('view.messageInfo')}</p>
 
+        <p className="text-sm secondary mb-1">{t('view.homepage')}</p>
+        <input className="text mb-3 w-full" placeholder={t('view.homepage')} type="text"
+               onChange={(e) => {
+                   setHomepage(e.currentTarget.value)
+                   setUnsaved(true)
+               }} value={homepage}/>
+
         <p className="text-sm secondary mb-1">{t('view.terms')}</p>
         <input className="text mb-3 w-full" placeholder={t('view.terms')} type="text"
                onChange={(e) => {
@@ -288,6 +297,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                 <p className="flex-grow py-3">{app.approved === ApprovalStatus.approved ? t('view.changesApproved') : t('view.changes')}</p>
                 <button onClick={() => {
                     setMessage(app.message)
+                    setHomepage(app.homepage)
                     setTerms(app.terms ?? '')
                     setPrivacy(app.privacy ?? '')
                     setRedirectURIs(app.redirectUrls)
@@ -307,6 +317,7 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                         scopes: scopes.map(s => Scope[s as keyof typeof Scope])
                     })
                     setMessage(a.message)
+                    setHomepage(a.homepage)
                     setTerms(a.terms ?? '')
                     setPrivacy(a.privacy ?? '')
                     setRedirectURIs(a.redirectUrls)

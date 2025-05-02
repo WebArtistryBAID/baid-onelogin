@@ -6,6 +6,7 @@
     "title": "创建应用",
     "responsibility": "您将被登记为应用的所有者，并对应用执行的操作负担责任。您的应用必须经过审批后用户才能使用。",
     "nameInput": "应用名称",
+    "homepageInput": "主页 URI",
     "create": "创建",
     "cancel": "取消"
   },
@@ -35,6 +36,7 @@
     "authorization": "授权",
     "viewAuthorizations": "查看已授权用户",
     "redirect": "Redirect URIs",
+    "homepage": "主页 URI",
     "terms": "服务条款链接",
     "privacy": "隐私条款链接",
     "scopes": "Scopes",

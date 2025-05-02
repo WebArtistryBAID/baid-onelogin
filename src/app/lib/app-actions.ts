@@ -1,12 +1,12 @@
 'use server'
 
-import {Application, ApprovalRequest, ApprovalStatus, PrismaClient} from '@prisma/client'
-import {randomBytes, randomUUID} from 'node:crypto'
-import {findUserOrThrow} from '@/app/lib/utils'
+import { Application, ApprovalRequest, ApprovalStatus, PrismaClient } from '@prisma/client'
+import { randomBytes, randomUUID } from 'node:crypto'
+import { findUserOrThrow } from '@/app/lib/utils'
 import path from 'node:path'
 import sharp from 'sharp'
 import fsPromise from 'node:fs/promises'
-import {getMe} from '@/app/lib/user-actions'
+import { getMe } from '@/app/lib/user-actions'
 
 const prisma = new PrismaClient()
 
@@ -20,14 +20,48 @@ export interface ApplicationSimple {
     ownerId: number
     message: string
     approved: ApprovalStatus
+    homepage: string
     terms: string | null
     privacy: string | null
+}
+
+export async function getApps(): Promise<ApplicationSimple[]> {
+    return prisma.application.findMany({
+        select: {
+            id: true,
+            name: true,
+            icon: true,
+            redirectUrls: true,
+            scopes: true,
+            clientId: true,
+            ownerId: true,
+            message: true,
+            approved: true,
+            homepage: true,
+            terms: true,
+            privacy: true
+        }
+    })
 }
 
 export async function getAppByClientID(clientID: string): Promise<ApplicationSimple | null> {
     return prisma.application.findFirst({
         where: {
             clientId: clientID
+        },
+        select: {
+            id: true,
+            name: true,
+            icon: true,
+            redirectUrls: true,
+            scopes: true,
+            clientId: true,
+            ownerId: true,
+            message: true,
+            approved: true,
+            homepage: true,
+            terms: true,
+            privacy: true
         }
     })
 }
@@ -36,6 +70,20 @@ export async function getAppByID(id: number): Promise<ApplicationSimple | null> 
     return prisma.application.findFirst({
         where: {
             id
+        },
+        select: {
+            id: true,
+            name: true,
+            icon: true,
+            redirectUrls: true,
+            scopes: true,
+            clientId: true,
+            ownerId: true,
+            message: true,
+            approved: true,
+            homepage: true,
+            terms: true,
+            privacy: true
         }
     })
 }
@@ -54,6 +102,7 @@ export async function createApp(formData: FormData): Promise<Application> {
     const app = await prisma.application.create({
         data: {
             name: formData.get('name') as string,
+            homepage: formData.get('homepage') as string,
             icon: null,
             redirectUrls: [],
             scopes: [],

@@ -19,6 +19,8 @@ export default async function ApplicationCreate() {
             }}>
                 <input type="text" name="name" minLength={2} maxLength={16} className="text mb-3"
                        placeholder={t('create.nameInput')}/>
+                <input type="text" name="homepage" minLength={2} maxLength={256} className="text mb-3"
+                       placeholder={t('create.homepageInput')}/>
 
                 <div className="flex">
                     <button type="submit" className="btn mr-3">{t('create.create')}</button>

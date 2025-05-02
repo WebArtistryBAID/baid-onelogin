@@ -14,7 +14,7 @@ export default async function AuthPage({searchParams}: { searchParams: never }) 
         <div className="p-5 w-full h-full flex flex-col justify-center items-center">
             <h1 className="mb-1">{t('title')}</h1>
             <p className="mb-5 text-sm">{t('description')}</p>
-            <div className="flex flex-col gap-3 w-full">
+            <div className="flex flex-col gap-3 w-full mb-5">
                 <a href={redirect}
                    className="flex items-center gap-3 bg-gray-50 rounded  dark:bg-gray-800 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
                     <img alt="" src="/images/seiue.webp" className="w-8 h-8 rounded-full"/>
@@ -26,6 +26,7 @@ export default async function AuthPage({searchParams}: { searchParams: never }) 
                     <p>{t('loginAccessCode')}</p>
                 </Link>
             </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t('message')}</p>
         </div>
     </div>
 }

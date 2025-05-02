@@ -30,7 +30,7 @@ model User {
   type          UserType
   logs          UserAuditLog[]
   appLogs       AppAuditLog[]
-  accessCodes AccessCode[]
+  accessCodes   AccessCode[]
   auths         Authorization[]
   apps          Application[]
   lastSMSVerify DateTime        @default("2022-12-07T17:24:53Z")
@@ -62,6 +62,7 @@ model Application {
   ownerId      Int
   message      String
   approved     ApprovalStatus
+  homepage     String
   terms        String?
   privacy      String?
   logs         AppAuditLog[]
