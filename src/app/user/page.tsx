@@ -21,7 +21,7 @@ export default async function Home() {
 
             {apps.map(app => <a href={app.homepage} key={app.id} className="app-block">
                 <AppIcon uploadable={false} size="big" app={app}/>
-                <p className="text-lg">{app.name}</p>
+                <p className="text-lg mt-3">{app.name}</p>
             </a>)}
         </div>
     </div>

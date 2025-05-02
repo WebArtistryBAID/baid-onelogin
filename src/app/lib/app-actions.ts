@@ -27,6 +27,9 @@ export interface ApplicationSimple {
 
 export async function getApps(): Promise<ApplicationSimple[]> {
     return prisma.application.findMany({
+        where: {
+            approved: ApprovalStatus.approved
+        },
         select: {
             id: true,
             name: true,
