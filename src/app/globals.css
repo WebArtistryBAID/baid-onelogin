@@ -96,7 +96,7 @@ a.inline {
 }
 
 .app-block {
-  @apply rounded-lg p-4 border border-gray-200 dark:border-gray-700 flex justify-center items-center flex-col shadow-lg hover:shadow hover:bg-gray-50 transition-all duration-200
+  @apply rounded-lg p-4 border border-gray-200 dark:border-gray-700 flex justify-center items-center flex-col shadow-lg hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200
 }
 
 @layer utilities {
