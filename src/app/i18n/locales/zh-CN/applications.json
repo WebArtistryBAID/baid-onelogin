@@ -57,6 +57,12 @@
     "reject": "拒绝",
     "addRedirect": "添加",
     "addRedirectPlaceholder": "Redirect URI",
-    "deleteRedirect": "删除"
+    "deleteRedirect": "删除",
+    "accessControl": "访问控制",
+    "accessControlDescription": "仅允许特定用户访问此应用。",
+    "allowedUsers": "允许的用户 ID",
+    "addUser": "添加",
+    "deleteUser": "删除",
+    "addUserPlaceholder": "用户 ID"
   }
 }

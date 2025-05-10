@@ -39,6 +39,9 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
     const [ redirectURIs, setRedirectURIs ] = useState<string[]>([])
     const [ redirectURI, setRedirectURI ] = useState('')
     const [ scopes, setScopes ] = useState<string[]>([])
+    const [ accessGated, setAccessGated ] = useState(false)
+    const [ allowedUsers, setAllowedUsers ] = useState<number[]>([])
+    const [ allowedUser, setAllowedUser ] = useState('')
 
     const [ unsaved, setUnsaved ] = useState(false)
     const [ saveLoading, setSaveLoading ] = useState(false)
@@ -66,12 +69,14 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
             setPrivacy(a.privacy ?? '')
             setRedirectURIs(a.redirectUrls)
             setScopes(a.scopes)
+            setAccessGated(a.accessGated)
+            setAllowedUsers(a.allowedUsers)
             setApp(a!)
             setMe(await getMe())
             setEAR(await getApprovalRequestForApp(a.id))
         })()
-    }, [router,
-        searchParams])
+    }, [ router,
+        searchParams ])
 
     if (app == null || me == null) {
         return <div>
@@ -253,6 +258,44 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
         </div>
         <p className="text-xs secondary mb-3">{t('view.scopesInfo')}</p>
 
+        <p className="text-xs secondary mb-1">{t('view.accessControl')}</p>
+        <div className="flex items-center mb-3">
+            <input type="checkbox" id="access-gated" className="mr-3" checked={accessGated} onChange={e => {
+                setAccessGated(e.currentTarget.checked)
+                setUnsaved(true)
+            }}/>
+            <label htmlFor="access-gated">{t('view.accessControlDescription')}</label>
+        </div>
+
+        <If condition={accessGated}>
+            <p className="text-xs secondary mb-1">{t('view.allowedUsers')}</p>
+            {allowedUsers.map((user, i) =>
+                <pre key={i} className="rounded bg-secondary p-3 mb-1 relative w-full overflow-x-auto">
+                    {user.toString()}
+
+                    <button onClick={() => {
+                        setAllowedUsers(allowedUsers.filter((_, j) => j !== i))
+                        setUnsaved(true)
+                    }}
+                            className="absolute right-3 top-2 icon-btn h-8 w-8">
+                        <FontAwesomeIcon icon={faClose} aria-label={t('view.deleteUser')}/>
+                    </button>
+                </pre>)}
+
+            <div className="flex mb-3 items-center">
+                <input className="text mr-3 flex-grow" type="text" onChange={e => setAllowedUser(e.currentTarget.value)}
+                       placeholder={t('view.addUserPlaceholder')} value={allowedUser}/>
+                <button className="btn flex-shrink" onClick={() => {
+                    if (isNaN(parseInt(allowedUser)) || allowedUser.length < 1 || parseInt(allowedUser) < 0) {
+                        return
+                    }
+                    setAllowedUsers([ ...allowedUsers, parseInt(allowedUser) ])
+                    setAllowedUser('')
+                    setUnsaved(true)
+                }}>{t('view.addUser')}</button>
+            </div>
+        </If>
+
         <p className="text-sm secondary mb-1">{t('view.others')}</p>
         <button className="btn-danger mb-3" onClick={() => setDeleteConfirm(true)}>{t('view.delete')}</button>
 
@@ -303,9 +346,11 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                     setRedirectURIs(app.redirectUrls)
                     setRedirectURI('')
                     setScopes(app.scopes)
+                    setAccessGated(app.accessGated)
+                    setAllowedUsers(app.allowedUsers)
                     setUnsaved(false)
                 }}
-                        className="btn-secondary flex-shrink">{t('view.cancel')}</button>
+                        className="btn-secondary flex-shrink mr-3">{t('view.cancel')}</button>
                 <button disabled={saveLoading} onClick={async () => {
                     setSaveLoading(true)
                     const a = await updateApp({
@@ -315,7 +360,9 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                         terms,
                         privacy,
                         redirectUrls: redirectURIs,
-                        scopes: scopes.map(s => Scope[s as keyof typeof Scope])
+                        scopes: scopes.map(s => Scope[s as keyof typeof Scope]),
+                        accessGated,
+                        allowedUsers
                     })
                     setMessage(a.message)
                     setHomepage(a.homepage)
@@ -324,6 +371,8 @@ export default function ApplicationView({ searchParams }: { searchParams: never 
                     setRedirectURIs(a.redirectUrls)
                     setRedirectURI('')
                     setScopes(a.scopes)
+                    setAccessGated(a.accessGated)
+                    setAllowedUsers(a.allowedUsers)
                     setApp(a)
                     setUnsaved(false)
                     setSaveLoading(false)

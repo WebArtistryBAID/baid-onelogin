@@ -23,12 +23,27 @@ export interface ApplicationSimple {
     homepage: string
     terms: string | null
     privacy: string | null
+    accessGated: boolean
 }
 
 export async function getApps(): Promise<ApplicationSimple[]> {
+    const user = await getMe()
     return prisma.application.findMany({
         where: {
-            approved: ApprovalStatus.approved
+            approved: ApprovalStatus.approved,
+            OR: [
+                {
+                    allowedUsers: {
+                        hasSome: [ user.seiueId ]
+                    }
+                },
+                {
+                    accessGated: false
+                },
+                {
+                    ownerId: user.seiueId
+                }
+            ]
         },
         select: {
             id: true,
@@ -42,15 +57,31 @@ export async function getApps(): Promise<ApplicationSimple[]> {
             approved: true,
             homepage: true,
             terms: true,
-            privacy: true
+            privacy: true,
+            accessGated: true
         }
     })
 }
 
 export async function getAppByClientID(clientID: string): Promise<ApplicationSimple | null> {
+    const user = await getMe()
     return prisma.application.findFirst({
         where: {
-            clientId: clientID
+            clientId: clientID,
+            approved: ApprovalStatus.approved,
+            OR: [
+                {
+                    allowedUsers: {
+                        hasSome: [ user.seiueId ]
+                    }
+                },
+                {
+                    accessGated: false
+                },
+                {
+                    ownerId: user.seiueId
+                }
+            ]
         },
         select: {
             id: true,
@@ -64,15 +95,31 @@ export async function getAppByClientID(clientID: string): Promise<ApplicationSim
             approved: true,
             homepage: true,
             terms: true,
-            privacy: true
+            privacy: true,
+            accessGated: true
         }
     })
 }
 
 export async function getAppByID(id: number): Promise<ApplicationSimple | null> {
+    const user = await getMe()
     return prisma.application.findFirst({
         where: {
-            id
+            id,
+            approved: ApprovalStatus.approved,
+            OR: [
+                {
+                    allowedUsers: {
+                        hasSome: [ user.seiueId ]
+                    }
+                },
+                {
+                    accessGated: false
+                },
+                {
+                    ownerId: user.seiueId
+                }
+            ]
         },
         select: {
             id: true,
@@ -86,7 +133,8 @@ export async function getAppByID(id: number): Promise<ApplicationSimple | null> 
             approved: true,
             homepage: true,
             terms: true,
-            privacy: true
+            privacy: true,
+            accessGated: true
         }
     })
 }

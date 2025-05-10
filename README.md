@@ -27,13 +27,6 @@ To run in development:
 | `UPLOAD_ROOT`              | The directory where uploaded files are stored. In development, this is `public/uploads`. |
 | `UPLOAD_SERVE_PATH`        | The path where uploaded files are served. In development, this is `uploads`.             |
 | `BOTTOM_TEXT`              | In case you need this.                                                                   |
-| `ALIYUN_ENDPOINT`          | Aliyun SMS endpoint.                                                                     |
-| `ALIYUN_ACCESSKEY_ID`      | Aliyun Access Key ID.                                                                    |
-| `ALIYUN_ACCESSKEY_SECRET`  | Aliyun Access Key Secret.                                                                |
-| `ALIYUN_REGION`            | Aliyun SMS region.                                                                       |
-| `ALIYUN_SIGNATURE_NAME`    | Signature name for SMS on Aliyun.                                                        |
-| `ALIYUN_TEMPLATE_CODE_SMS` | Template code for sending verification codes in Aliyun SMS.                              |
-| `SKIP_SMS`                 | `true` if needed to skip sending SMS.                                                    |
 
 * Run `npm run dev`.
 

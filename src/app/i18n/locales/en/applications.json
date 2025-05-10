@@ -57,6 +57,12 @@
     "reject": "Reject",
     "addRedirect": "Add",
     "addRedirectPlaceholder": "Redirect URI",
-    "deleteRedirect": "Delete"
+    "deleteRedirect": "Delete",
+    "accessControl": "Access Control",
+    "accessControlDescription": "Limit access to this application to specific users.",
+    "allowedUsers": "Allowed User IDs",
+    "addUser": "Add",
+    "deleteUser": "Delete",
+    "addUserPlaceholder": "User ID"
   }
 }

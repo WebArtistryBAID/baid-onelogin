@@ -11,14 +11,15 @@ export default async function ApplicationCreate() {
             <h1 className="mb-3">{t('create.title')}</h1>
             <p className="text-sm mb-3">{t('create.responsibility')}</p>
 
-            <p className="mb-1 text-sm secondary">{t('create.nameInput')}</p>
             <form action={async (data) => {
                 'use server'
                 const app = await createApp(data)
                 redirect(`/user/applications/view?app=${app.id}&secret=${app.clientSecret}`)
             }}>
+                <p className="mb-1 text-sm secondary">{t('create.nameInput')}</p>
                 <input type="text" name="name" minLength={2} maxLength={16} className="text mb-3"
                        placeholder={t('create.nameInput')}/>
+                <p className="mb-1 text-sm secondary">{t('create.homepageInput')}</p>
                 <input type="text" name="homepage" minLength={2} maxLength={256} className="text mb-3"
                        placeholder={t('create.homepageInput')}/>
 

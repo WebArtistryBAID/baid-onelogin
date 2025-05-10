@@ -68,6 +68,8 @@ model Application {
   logs         AppAuditLog[]
   auths        Authorization[]
   approval     ApprovalRequest[]
+  accessGated  Boolean           @default(false)
+  allowedUsers Int[]
 }
 
 model Authorization {
