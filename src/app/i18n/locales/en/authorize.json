@@ -10,7 +10,7 @@
   },
   "error": "An error occurred",
   "errorParameters": "We are sorry, but there is an error with your request. Invalid parameters.",
-  "errorApp": "We're sorry, but there is an error with your request. Application not found.",
+  "errorApp": "We're sorry, but there is an error with your request. Application not found, not approved, or not assigned to you.",
   "errorApproval": "We're sorry, but there is an error with your request. Application not approved.",
   "errorResponseType": "We're sorry, but there is an error with your request. Flow type not supported.",
   "errorScope": "We're sorry, but there is an error with your request. The scope you have requested are not approved.",
