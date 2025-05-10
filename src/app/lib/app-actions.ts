@@ -102,24 +102,10 @@ export async function getAppByClientID(clientID: string): Promise<ApplicationSim
 }
 
 export async function getAppByID(id: number): Promise<ApplicationSimple | null> {
-    const user = await getMe()
     return prisma.application.findFirst({
         where: {
             id,
-            approved: ApprovalStatus.approved,
-            OR: [
-                {
-                    allowedUsers: {
-                        hasSome: [ user.seiueId ]
-                    }
-                },
-                {
-                    accessGated: false
-                },
-                {
-                    ownerId: user.seiueId
-                }
-            ]
+            approved: ApprovalStatus.approved
         },
         select: {
             id: true,
