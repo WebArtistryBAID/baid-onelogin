@@ -22,28 +22,40 @@ CREATE TABLE "User" (
     "schoolId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "accessToken" TEXT,
     "name" TEXT NOT NULL,
     "pinyin" TEXT NOT NULL,
     "phone" TEXT,
-    "adminClass0"   TEXT,
+    "adminClass0" TEXT,
     "classTeacher0" TEXT,
     "gender" "Gender" NOT NULL,
     "lastUserAgent" TEXT NOT NULL,
-    "admin"         BOOLEAN      NOT NULL DEFAULT false,
+    "admin" BOOLEAN NOT NULL DEFAULT false,
     "type" "UserType" NOT NULL,
     "lastSMSVerify" TIMESTAMP(3) NOT NULL DEFAULT '2022-12-07 17:24:53 +00:00',
-    "lastSendSMS"   TIMESTAMP(3) NOT NULL DEFAULT '2022-12-07 17:24:53 +00:00',
-    "lastSMSPhone"  TEXT,
-    "lastSMSCode"   TEXT,
+    "lastSendSMS" TIMESTAMP(3) NOT NULL DEFAULT '2022-12-07 17:24:53 +00:00',
+    "lastSMSPhone" TEXT,
+    "lastSMSCode" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("seiueId")
+);
+
+-- CreateTable
+CREATE TABLE "AccessCode" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "code" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "persistent" BOOLEAN NOT NULL,
+
+    CONSTRAINT "AccessCode_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Application" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "icon"     TEXT,
+    "icon" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "redirectUrls" TEXT[],
@@ -53,8 +65,11 @@ CREATE TABLE "Application" (
     "ownerId" INTEGER NOT NULL,
     "message" TEXT NOT NULL,
     "approved" "ApprovalStatus" NOT NULL,
-    "terms"    TEXT,
+    "homepage" TEXT NOT NULL,
+    "terms" TEXT,
     "privacy" TEXT,
+    "accessGated" BOOLEAN NOT NULL DEFAULT false,
+    "allowedUsers" INTEGER[],
 
     CONSTRAINT "Application_pkey" PRIMARY KEY ("id")
 );
@@ -65,15 +80,14 @@ CREATE TABLE "Authorization" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" INTEGER NOT NULL,
     "applicationId" INTEGER NOT NULL,
-    "smsPhone"  TEXT,
-    "scopes"    TEXT[],
+    "smsPhone" TEXT,
+    "scopes" TEXT[],
 
     CONSTRAINT "Authorization_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ApprovalRequest"
-(
+CREATE TABLE "ApprovalRequest" (
     "id" SERIAL NOT NULL,
     "applicationId" INTEGER NOT NULL,
 
@@ -107,28 +121,25 @@ CREATE TABLE "AppAuditLog" (
 CREATE UNIQUE INDEX "User_seiueId_key" ON "User"("seiueId");
 
 -- AddForeignKey
+ALTER TABLE "AccessCode" ADD CONSTRAINT "AccessCode_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("seiueId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Application" ADD CONSTRAINT "Application_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("seiueId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Authorization"
-    ADD CONSTRAINT "Authorization_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("seiueId") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Authorization" ADD CONSTRAINT "Authorization_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("seiueId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Authorization"
-    ADD CONSTRAINT "Authorization_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Authorization" ADD CONSTRAINT "Authorization_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ApprovalRequest"
-    ADD CONSTRAINT "ApprovalRequest_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ApprovalRequest" ADD CONSTRAINT "ApprovalRequest_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserAuditLog"
-    ADD CONSTRAINT "UserAuditLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("seiueId") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "UserAuditLog" ADD CONSTRAINT "UserAuditLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("seiueId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "AppAuditLog"
-    ADD CONSTRAINT "AppAuditLog_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "AppAuditLog" ADD CONSTRAINT "AppAuditLog_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "AppAuditLog"
-    ADD CONSTRAINT "AppAuditLog_operationUserId_fkey" FOREIGN KEY ("operationUserId") REFERENCES "User" ("seiueId") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "AppAuditLog" ADD CONSTRAINT "AppAuditLog_operationUserId_fkey" FOREIGN KEY ("operationUserId") REFERENCES "User"("seiueId") ON DELETE CASCADE ON UPDATE CASCADE;
