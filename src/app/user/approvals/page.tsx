@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHourglassEmpty } from '@fortawesome/free-solid-svg-icons'
 import { AppIcon } from '@/app/user/applications/AppIcon'
 import Link from 'next/link'
-import { Application } from '@prisma/client'
+import { Application } from '@/generated/prisma/client'
 
 export default async function Approvals() {
     const { t } = await useTranslation('approvals')

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCode, faStamp } from '@fortawesome/free-solid-svg-icons'
 import If from '@/app/lib/If'
 import { useEffect, useState } from 'react'
-import { User } from '@prisma/client'
+import { User } from '@/generated/prisma/browser'
 import { getMe } from '@/app/lib/user-actions'
 import CookiesBoundary from '@/app/lib/CookiesBoundary'
 

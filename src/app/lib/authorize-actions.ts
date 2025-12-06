@@ -1,14 +1,14 @@
 'use server'
 
-import { ApprovalStatus, Authorization, PrismaClient, Scope } from '@prisma/client'
+import { ApprovalStatus, Authorization, Scope } from '@/generated/prisma/client'
 import { getMe } from '@/app/lib/user-actions'
 import { createSecretKey } from 'node:crypto'
 import { jwtVerify, SignJWT } from 'jose'
 import { getAppByID, verifyAppSecretByID } from '@/app/lib/app-actions'
 import { findUserOrThrow } from '@/app/lib/utils'
 import { NextRequest } from 'next/server'
+import { prisma } from '@/app/lib/prisma'
 
-const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
 
 export async function authorizeForCode(application: number, scopes: Scope[], state: string | null, redirectURI: string, includePhone: boolean = false): Promise<string | null> {

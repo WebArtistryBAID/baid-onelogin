@@ -2,7 +2,7 @@
 
 import Error from './Error'
 import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
-import { ApprovalStatus, Scope, User } from '@prisma/client'
+import { ApprovalStatus, Scope, User } from '@/generated/prisma/browser'
 import { AppIcon } from '@/app/user/applications/AppIcon'
 import { getMe, getUserNameByID } from '@/app/lib/user-actions'
 import { Trans } from 'react-i18next/TransWithoutContext'

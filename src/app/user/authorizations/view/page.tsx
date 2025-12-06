@@ -3,7 +3,7 @@
 import { useTranslationClient } from '@/app/i18n/client'
 import { Suspense, useEffect, useState } from 'react'
 import { ApplicationSimple, getAppByID } from '@/app/lib/app-actions'
-import { Authorization } from '@prisma/client'
+import { Authorization } from '@/generated/prisma/browser'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getMyAuthByID, getUserNameByID } from '@/app/lib/user-actions'
 import { AppIcon } from '@/app/user/applications/AppIcon'

@@ -1,10 +1,9 @@
 'use server'
 
-import { Application, Authorization, Gender, PrismaClient, User, UserType } from '@prisma/client'
+import { Application, Authorization, Gender, User, UserType } from '@/generated/prisma/client'
 import { findUserOrThrow } from '@/app/lib/utils'
 import { cookies } from 'next/headers'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/app/lib/prisma'
 
 export async function getMe(): Promise<User> {
     return (await prisma.user.findUnique({

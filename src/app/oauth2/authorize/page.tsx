@@ -1,10 +1,10 @@
 import Authorize from '@/app/oauth2/authorize/Authorize'
 import Error from '@/app/oauth2/authorize/Error'
-import {getMyAuthByApp} from '@/app/lib/user-actions'
-import {getAppByClientID} from '@/app/lib/app-actions'
-import {redirect} from 'next/navigation'
-import {authorizeForCode} from '@/app/lib/authorize-actions'
-import {Scope} from '@prisma/client'
+import { getMyAuthByApp } from '@/app/lib/user-actions'
+import { getAppByClientID } from '@/app/lib/app-actions'
+import { redirect } from 'next/navigation'
+import { authorizeForCode } from '@/app/lib/authorize-actions'
+import { Scope } from '@/generated/prisma/client'
 
 export default async function AuthorizePage({ searchParams }: { searchParams: never }) {
     if (!('client_id' in (await searchParams)) || !('response_type' in (await searchParams)) || !('redirect_uri' in (await searchParams)) || !('scope' in (await searchParams))) {

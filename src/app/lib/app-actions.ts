@@ -1,14 +1,13 @@
 'use server'
 
-import { Application, ApprovalRequest, ApprovalStatus, PrismaClient } from '@prisma/client'
+import { Application, ApprovalRequest, ApprovalStatus } from '@/generated/prisma/client'
 import { randomBytes, randomUUID } from 'node:crypto'
 import { findUserOrThrow } from '@/app/lib/utils'
 import path from 'node:path'
 import sharp from 'sharp'
 import fsPromise from 'node:fs/promises'
 import { getMe } from '@/app/lib/user-actions'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/app/lib/prisma'
 
 export interface ApplicationSimple {
     id: number

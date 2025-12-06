@@ -1,11 +1,11 @@
 'use server'
 
-import {cookies, headers} from 'next/headers'
-import {SignJWT} from 'jose'
-import {Gender, PrismaClient, UserAuditLogType, UserType} from '@prisma/client'
-import {createSecretKey} from 'node:crypto'
+import { cookies, headers } from 'next/headers'
+import { SignJWT } from 'jose'
+import { Gender, UserAuditLogType, UserType } from '@/generated/prisma/client'
+import { createSecretKey } from 'node:crypto'
+import { prisma } from '@/app/lib/prisma'
 
-const prisma = new PrismaClient()
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
 
 export async function loginWithAccessCode(code: string): Promise<boolean> {
