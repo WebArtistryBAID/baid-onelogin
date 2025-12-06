@@ -12,6 +12,7 @@ import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import CookiesBoundary from '@/app/lib/CookiesBoundary'
 
 function Sub() {
     const { t } = useTranslationClient('authorize')
@@ -97,5 +98,5 @@ function Sub() {
 }
 
 export default function Authorize() {
-    return <Suspense><Sub/></Suspense>
+    return <Suspense><CookiesBoundary><Sub/></CookiesBoundary></Suspense>
 }
