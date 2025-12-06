@@ -1,9 +1,10 @@
 'use client'
 
-import {useTranslationClient} from '@/app/i18n/client'
-import {Suspense, useEffect} from 'react'
-import {useRouter, useSearchParams} from 'next/navigation'
+import { useTranslationClient } from '@/app/i18n/client'
+import { Suspense, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import login from '@/app/auth/callback/login'
+import CookiesBoundary from '@/app/lib/CookiesBoundary'
 
 function Sub() {
     const search = useSearchParams()
@@ -31,5 +32,5 @@ function Sub() {
 }
 
 export default function AuthCallback() {
-    return <Suspense><Sub/></Suspense>
+    return <Suspense><CookiesBoundary><Sub/></CookiesBoundary></Suspense>
 }

@@ -1,12 +1,21 @@
 'use client'
 
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faUpload} from '@fortawesome/free-solid-svg-icons'
-import {useRef} from 'react'
-import {useTranslationClient} from '@/app/i18n/client'
-import {ApplicationSimple, uploadAppIcon} from '@/app/lib/app-actions'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUpload } from '@fortawesome/free-solid-svg-icons'
+import { useRef } from 'react'
+import { useTranslationClient } from '@/app/i18n/client'
+import { ApplicationSimple, uploadAppIcon } from '@/app/lib/app-actions'
+import CookiesBoundary from '@/app/lib/CookiesBoundary'
 
 export function AppIcon({app, size, uploadable = false}: {
+    app: ApplicationSimple,
+    size: 'small' | 'big',
+    uploadable?: boolean
+}) {
+    return <CookiesBoundary><WrappedAppIcon app={app} size={size} uploadable={uploadable}/></CookiesBoundary>
+}
+
+function WrappedAppIcon({ app, size, uploadable = false }: {
     app: ApplicationSimple,
     size: 'small' | 'big',
     uploadable: boolean

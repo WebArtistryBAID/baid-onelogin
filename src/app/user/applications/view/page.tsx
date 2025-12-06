@@ -15,13 +15,19 @@ import { getMe, getUserNameByID } from '@/app/lib/user-actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { useTranslationClient } from '@/app/i18n/client'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { $Enums, Application, ApprovalRequest, ApprovalStatus, User } from '@prisma/client'
 import { faClose, faRefresh, faWarning } from '@fortawesome/free-solid-svg-icons'
 import If from '@/app/lib/If'
+import CookiesBoundary from '@/app/lib/CookiesBoundary'
 import Scope = $Enums.Scope
 
-export default function ApplicationView({ searchParams }: { searchParams: never }) {
+export default function WrappedApplicationView(props: { searchParams: Promise<never> }) {
+    const searchParams = use(props.searchParams)
+    return <CookiesBoundary><ApplicationView searchParams={searchParams}/></CookiesBoundary>
+}
+
+function ApplicationView({ searchParams }: { searchParams: never }) {
     const { t } = useTranslationClient('applications')
     const [ me, setMe ] = useState<User | null>(null)
     const router = useRouter()

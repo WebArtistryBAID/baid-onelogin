@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { loginWithAccessCode } from '@/app/auth/callback/login'
 import If from '@/app/lib/If'
 import Branding from '@/app/lib/Branding'
+import CookiesBoundary from '@/app/lib/CookiesBoundary'
 
 function Sub() {
     const {t} = useTranslationClient('auth')
@@ -53,5 +54,5 @@ function Sub() {
 }
 
 export default function AccessCodePage() {
-    return <Suspense><Sub/></Suspense>
+    return <Suspense><CookiesBoundary><Sub/></CookiesBoundary></Suspense>
 }

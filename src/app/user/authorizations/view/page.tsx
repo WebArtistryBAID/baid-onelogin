@@ -9,6 +9,7 @@ import { getMyAuthByID, getUserNameByID } from '@/app/lib/user-actions'
 import { AppIcon } from '@/app/user/applications/AppIcon'
 import { Trans } from 'react-i18next/TransWithoutContext'
 import { revokeMyAuthorization } from '@/app/lib/authorize-actions'
+import CookiesBoundary from '@/app/lib/CookiesBoundary'
 
 function Sub() {
     const {t} = useTranslationClient('authorizations')
@@ -70,5 +71,5 @@ function Sub() {
 }
 
 export default function ViewAuthorization() {
-    return <Suspense><Sub/></Suspense>
+    return <Suspense><CookiesBoundary><Sub/></CookiesBoundary></Suspense>
 }

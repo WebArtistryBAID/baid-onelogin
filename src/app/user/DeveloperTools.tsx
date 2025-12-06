@@ -8,8 +8,13 @@ import If from '@/app/lib/If'
 import { useEffect, useState } from 'react'
 import { User } from '@prisma/client'
 import { getMe } from '@/app/lib/user-actions'
+import CookiesBoundary from '@/app/lib/CookiesBoundary'
 
-export default function DeveloperTools() {
+export default function WrappedDeveloperTools() {
+    return <CookiesBoundary><DeveloperTools/></CookiesBoundary>
+}
+
+function DeveloperTools() {
     const { t } = useTranslationClient('home')
     const [ me, setMe ] = useState<User | null | undefined>(undefined)
     const [ showDev, setShowDev ] = useState(false)

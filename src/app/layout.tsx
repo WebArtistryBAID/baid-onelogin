@@ -34,7 +34,7 @@ export default function RootLayout({
             <body
                 className={`antialiased ${inter.variable} ${notoSans.variable}`}
             >
-                <NextTopLoader/>
+                <NextTopLoader showSpinner={false}/>
                 {children}
 
                 <If condition={process.env.BOTTOM_TEXT != null}>
