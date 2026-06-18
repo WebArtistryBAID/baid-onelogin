@@ -172,6 +172,7 @@ export async function loginWithFeishu(code: string | null, state: string | null)
         return appendError(target, 'feishu')
     }
     const userInfoJson = await userInfoResponse.json()
+    console.log(userInfoJson)
     if (userInfoJson.code !== 0) {
         return appendError(target, 'feishu')
     }

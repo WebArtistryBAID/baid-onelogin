@@ -21,6 +21,7 @@ export default async function AuthPage({ searchParams }: { searchParams: never }
     feishuRedirect.searchParams.set('client_id', process.env.FEISHU_APP_ID!)
     feishuRedirect.searchParams.set('response_type', 'code')
     feishuRedirect.searchParams.set('redirect_uri', feishuRedirectURI)
+    feishuRedirect.searchParams.set('scope', 'contact:user.phone:readonly contact:user.employee_id:readonly')
     feishuRedirect.searchParams.set('state', await createFeishuState(back))
 
     return <div className="simple-container">
