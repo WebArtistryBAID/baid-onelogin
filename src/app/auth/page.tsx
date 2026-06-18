@@ -1,13 +1,27 @@
-import { useTranslation } from '@/app/i18n'
+import {useTranslation} from '@/app/i18n'
 import Link from 'next/link'
 import Branding from '@/app/lib/Branding'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGlobeAsia } from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faGlobeAsia} from '@fortawesome/free-solid-svg-icons'
+import {createFeishuState} from '@/app/auth/callback/login'
+
+function normalizeRedirect(value: unknown): string {
+    if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) {
+        return '/'
+    }
+    return value
+}
 
 export default async function AuthPage({ searchParams }: { searchParams: never }) {
     const { t } = await useTranslation('auth')
-    const back = (await searchParams)['redirect'] || '/'
+    const back = normalizeRedirect((await searchParams)['redirect'])
     const redirect = `https://passport.seiue.com/authorize?response_type=token&client_id=${process.env.SEIUE_CLIENT_ID}&school_id=452&scope=reflection.read_basic&redirect_uri=${encodeURIComponent(`${process.env.HOSTED}/auth/callback?redirect=${encodeURIComponent(back)}`)}`
+    const feishuRedirectURI = `${process.env.HOSTED}/auth/callback/feishu`
+    const feishuRedirect = new URL('https://accounts.feishu.cn/open-apis/authen/v1/authorize')
+    feishuRedirect.searchParams.set('client_id', process.env.FEISHU_APP_ID!)
+    feishuRedirect.searchParams.set('response_type', 'code')
+    feishuRedirect.searchParams.set('redirect_uri', feishuRedirectURI)
+    feishuRedirect.searchParams.set('state', await createFeishuState(back))
 
     return <div className="simple-container">
         <Branding/>
@@ -21,6 +35,13 @@ export default async function AuthPage({ searchParams }: { searchParams: never }
                         <img alt="" src="/images/seiue.webp" className="w-6 h-6 rounded-full"/>
                     </div>
                     <p>{t('loginSeiue')}</p>
+                </a>
+                <a href={feishuRedirect.toString()}
+                   className="flex items-center gap-3 bg-gray-50 rounded  dark:bg-gray-800 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
+                    <div className="bg-white rounded-full flex items-center justify-center w-8 h-8">
+                        <img alt="" src="/images/feishu.webp" className="w-6 h-6 rounded-full"/>
+                    </div>
+                    <p>{t('loginFeishu')}</p>
                 </a>
                 <Link href={`/auth/code?redirect=${encodeURIComponent(back)}`}
                       className="flex items-center gap-3 bg-gray-50 rounded  dark:bg-gray-800 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">

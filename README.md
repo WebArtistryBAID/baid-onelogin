@@ -18,15 +18,17 @@ To run in development:
 * Run `npm install`.
 * Copy `.env.example` to `.env` and fill the following environment variables:
 
-| Name                       | Description                                                                              |
-|----------------------------|------------------------------------------------------------------------------------------|
-| `DATABASE_URL`             | The database URL to use. Typically `sqlite:///database.db`.                              |
-| `JWT_SECRET`               | The JWT secret key to use. You can generate one with `openssl rand -hex 32`.             |
-| `SEIUE_CLIENT_ID`          | The client ID received from SEIUE for authentication.                                    |
-| `HOSTED`                   | The location where OneLogin is hosted. No trailing slashes.                              |
-| `UPLOAD_ROOT`              | The directory where uploaded files are stored. In development, this is `public/uploads`. |
-| `UPLOAD_SERVE_PATH`        | The path where uploaded files are served. In development, this is `uploads`.             |
-| `BOTTOM_TEXT`              | In case you need this.                                                                   |
+| Name                | Description                                                                              |
+|---------------------|------------------------------------------------------------------------------------------|
+| `DATABASE_URL`      | The database URL to use. Typically `sqlite:///database.db`.                              |
+| `JWT_SECRET`        | The JWT secret key to use. You can generate one with `openssl rand -hex 32`.             |
+| `SEIUE_CLIENT_ID`   | The client ID received from SEIUE for authentication.                                    |
+| `FEISHU_APP_ID`     | The app ID received from Feishu for authentication.                                      |
+| `FEISHU_APP_SECRET` | The app secret received from Feishu for authentication.                                  |
+| `HOSTED`            | The location where OneLogin is hosted. No trailing slashes.                              |
+| `UPLOAD_ROOT`       | The directory where uploaded files are stored. In development, this is `public/uploads`. |
+| `UPLOAD_SERVE_PATH` | The path where uploaded files are served. In development, this is `uploads`.             |
+| `BOTTOM_TEXT`       | In case you need this.                                                                   |
 
 * Run `npm run dev`.
 
