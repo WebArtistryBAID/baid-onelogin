@@ -254,7 +254,7 @@ export default async function login(error: boolean | null, tok: string | null, t
         }
     })
 
-    if (json['role'] === 'guardian') {
+    if (json['role'] !== 'student') {
         return '/auth/parent'
     }
 
@@ -268,7 +268,7 @@ export default async function login(error: boolean | null, tok: string | null, t
         classTeacher0: (json['class_teachers'] == null || json['class_teachers'].length < 1) ? '' : json['class_teachers'][0],
         gender: (json['gender'] === 'm' ? Gender.male : (json['gender'] === 'f' ? Gender.female : Gender.others)),
         lastUserAgent: head.get('User-Agent') ?? '',
-        type: json['role'] === 'student' ? UserType.student : UserType.teacher
+        type: UserType.student
     }
 
     if (user == null) {
