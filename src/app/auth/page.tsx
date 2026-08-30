@@ -1,8 +1,5 @@
 import {useTranslation} from '@/app/i18n'
-import Link from 'next/link'
 import Branding from '@/app/lib/Branding'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faGlobeAsia} from '@fortawesome/free-solid-svg-icons'
 import {createFeishuState} from '@/app/auth/callback/login'
 
 function normalizeRedirect(value: unknown): string {
@@ -44,13 +41,6 @@ export default async function AuthPage({ searchParams }: { searchParams: never }
                     </div>
                     <p>{t('loginFeishu')}</p>
                 </a>
-                <Link href={`/auth/code?redirect=${encodeURIComponent(back)}`}
-                      className="flex items-center gap-3 bg-gray-50 rounded  dark:bg-gray-800 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
-                    <div className="text-white bg-blue-500 rounded-full flex items-center justify-center w-8 h-8">
-                        <FontAwesomeIcon icon={faGlobeAsia}/>
-                    </div>
-                    <p>{t('loginAccessCode')}</p>
-                </Link>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400">{t('message')}</p>
         </div>
