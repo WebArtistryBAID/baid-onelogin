@@ -5,11 +5,23 @@ import { findUserOrThrow } from '@/app/lib/utils'
 import { cookies } from 'next/headers'
 import { prisma } from '@/app/lib/prisma'
 
-export async function getMe(): Promise<User> {
+// Fields that must never leave the server, even to the user themselves
+const privateUserFields = {
+    accessToken: true,
+    lastSMSCode: true,
+    lastSMSPhone: true,
+    lastSMSVerify: true,
+    lastSendSMS: true
+} as const
+
+export type SafeUser = Omit<User, keyof typeof privateUserFields>
+
+export async function getMe(): Promise<SafeUser> {
     return (await prisma.user.findUnique({
         where: {
             seiueId: await findUserOrThrow()
-        }
+        },
+        omit: privateUserFields
     }))!
 }
 
@@ -28,26 +40,14 @@ export interface UserSimple {
     type: UserType
 }
 
-export async function getUserByID(id: number): Promise<User> {
-    return (await prisma.user.findUnique({
-        where: {
-            seiueId: id
-        }
-    }))!
-}
-
-export async function getUserSimpleByID(id: number): Promise<UserSimple> {
-    return (await prisma.user.findUnique({
-        where: {
-            seiueId: id
-        }
-    }))!
-}
-
 export async function getUserNameByID(id: number): Promise<string> {
+    await findUserOrThrow()
     return (await prisma.user.findUnique({
         where: {
             seiueId: id
+        },
+        select: {
+            name: true
         }
     }))!.name
 }

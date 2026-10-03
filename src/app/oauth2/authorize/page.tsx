@@ -5,6 +5,7 @@ import { getAppByClientID } from '@/app/lib/app-actions'
 import { redirect } from 'next/navigation'
 import { authorizeForCode } from '@/app/lib/authorize-actions'
 import { Scope } from '@/generated/prisma/client'
+import { appendQuery } from '@/app/lib/safe-redirect'
 
 export default async function AuthorizePage({ searchParams }: { searchParams: never }) {
     if (!('client_id' in (await searchParams)) || !('response_type' in (await searchParams)) || !('redirect_uri' in (await searchParams)) || !('scope' in (await searchParams))) {
@@ -19,10 +20,14 @@ export default async function AuthorizePage({ searchParams }: { searchParams: ne
     if (auth == null) {
         return <Authorize/>
     }
-    if (!(scopes.every(s => auth.scopes.includes(s)))) {
+    if (!(scopes.every(s => auth.scopes.includes(s))) || (await searchParams)['response_type'] !== 'code') {
         return <Authorize/>
     }
-    const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), 'state' in (await searchParams) ? (await searchParams)['state'] as string : null, (await searchParams)['redirect_uri']!)
-    const stateParam = 'state' in (await searchParams) ? `&state=${(await searchParams)['state']}` : ''
-    redirect(`${(await searchParams)['redirect_uri']}?code=${code}${stateParam}`)
+    const redirectURI = (await searchParams)['redirect_uri'] as string
+    const state = 'state' in (await searchParams) ? (await searchParams)['state'] as string : null
+    const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), state, redirectURI)
+    if (code == null) {
+        return <Authorize/>
+    }
+    redirect(appendQuery(redirectURI, { code, state }))
 }

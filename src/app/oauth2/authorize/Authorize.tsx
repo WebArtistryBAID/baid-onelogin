@@ -2,7 +2,8 @@
 
 import Error from './Error'
 import { ApplicationSimple, getAppByClientID } from '@/app/lib/app-actions'
-import { ApprovalStatus, Scope, User } from '@/generated/prisma/browser'
+import { ApprovalStatus, Scope } from '@/generated/prisma/browser'
+import type { SafeUser } from '@/app/lib/user-actions'
 import { AppIcon } from '@/app/user/applications/AppIcon'
 import { getMe, getUserNameByID } from '@/app/lib/user-actions'
 import { Trans } from 'react-i18next/TransWithoutContext'
@@ -13,6 +14,7 @@ import { useSearchParams } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import CookiesBoundary from '@/app/lib/CookiesBoundary'
+import { appendQuery } from '@/app/lib/safe-redirect'
 
 function Sub() {
     const { t } = useTranslationClient('authorize')
@@ -25,7 +27,7 @@ function Sub() {
 
     const [ app, setApp ] = useState<ApplicationSimple | null | undefined>(undefined)
     const [ appOwner, setAppOwner ] = useState<string | null>(null)
-    const [ me, setMe ] = useState<User | null | undefined>(undefined)
+    const [ me, setMe ] = useState<SafeUser | null | undefined>(undefined)
     const [ loading, setLoading ] = useState(false)
 
     useEffect(() => {
@@ -53,7 +55,7 @@ function Sub() {
         return <Error message="errorApproval"/>
     }
 
-    if (!app.redirectUrls.includes(searchParams.get('redirect_uri')!)) {
+    if (!app.redirectUrls.includes(searchParams.get('redirect_uri')!) || !/^https?:\/\//i.test(searchParams.get('redirect_uri')!)) {
         return <Error message="errorRedirectURI"/>
     }
 
@@ -64,7 +66,13 @@ function Sub() {
         }
     }
 
-    const stateParam = searchParams.has('state') ? `&state=${searchParams.get('state')}` : ''
+    const redirectURI = searchParams.get('redirect_uri')!
+    const state = searchParams.get('state')
+    const deniedURL = appendQuery(redirectURI, {
+        error: 'access_denied',
+        error_description: 'The user denied the authorization request',
+        state
+    })
 
     return <div className="flex justify-center items-center flex-col p-8 h-full">
         <AppIcon uploadable={false} size="big" app={app}/>
@@ -86,13 +94,18 @@ function Sub() {
 
         <button onClick={async () => {
             setLoading(true)
-            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), searchParams.has('state') ? searchParams.get('state') : null, searchParams.get('redirect_uri')!)
+            const code = await authorizeForCode(app.id, scopes.map(s => s as keyof typeof Scope), state, redirectURI)
             if (code == null) {
-                location.href = `${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+authorization+request+failed${stateParam}`
+                location.href = appendQuery(redirectURI, {
+                    error: 'access_denied',
+                    error_description: 'The authorization request failed',
+                    state
+                })
+                return
             }
-            location.href = `${searchParams.get('redirect_uri')}?code=${code}${stateParam}`
+            location.href = appendQuery(redirectURI, { code, state })
         }} disabled={loading} className="btn w-full mb-3">{t(loading ? 'authorizing' : 'approve')}</button>
-        <a href={`${searchParams.get('redirect_uri')}?error=access_denied&error_description=The+user+denied+the+authorization+request${stateParam}`}
+        <a href={deniedURL}
            className="btn-secondary w-full text-center">{t('cancel')}</a>
     </div>
 }

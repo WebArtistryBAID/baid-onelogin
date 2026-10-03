@@ -4,27 +4,30 @@ import {cookies, headers} from 'next/headers'
 import {jwtVerify, SignJWT} from 'jose'
 import {Gender, UserAuditLogType, UserType} from '@/generated/prisma/client'
 import {createHash, createSecretKey} from 'node:crypto'
+import {parsePhoneNumberFromString} from 'libphonenumber-js'
 import {prisma} from '@/app/lib/prisma'
+import {appendQuery, safeRedirect} from '@/app/lib/safe-redirect'
 
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
 const feishuCallbackPath = '/auth/callback/feishu'
 
 function appendError(target: string, error: string): string {
-    return `${target}${target.includes('?') ? '&' : '?'}error=${error}`
+    return appendQuery(target, {error})
 }
 
-function normalizeRedirectTarget(value: unknown): string {
-    if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) {
-        return '/'
-    }
-    return value
-}
-
+// Returns the 11-digit mainland China mobile number, or '' if the value is not
+// one. Numbers from other countries are rejected so they can never collide
+// with a stored mainland number (e.g. +1 380-000-0000 vs 138 0000 0000).
 function normalizeMainlandMobile(value: unknown): string {
-    if (typeof value !== 'string') {
+    if (typeof value !== 'string' || !value.trim().startsWith('+')) {
         return ''
     }
-    return value.replace(/^\+86\s*/, '').replace(/\D/g, '')
+    const parsed = parsePhoneNumberFromString(value.trim())
+    if (parsed == null || parsed.countryCallingCode !== '86' || !parsed.isValid()) {
+        return ''
+    }
+    const national = parsed.nationalNumber.toString()
+    return /^1\d{10}$/.test(national) ? national : ''
 }
 
 async function getAvailableFeishuUserId(phone: string): Promise<number> {
@@ -50,13 +53,17 @@ async function issueInternalLogin(user: { seiueId: number, name: string, pinyin:
         .setProtectedHeader({alg: 'HS256'})
         .sign(secret);
     (await cookies()).set('access_token', token, {
-        expires: new Date(Date.now() + 86400000)
+        expires: new Date(Date.now() + 86400000),
+        httpOnly: true,
+        secure: process.env.HOSTED?.startsWith('https://') ?? true,
+        sameSite: 'lax',
+        path: '/'
     })
 }
 
 export async function createFeishuState(target: string): Promise<string> {
     return await new SignJWT({
-        target: normalizeRedirectTarget(target),
+        target: safeRedirect(target),
         type: 'feishu_oauth_state'
     })
         .setIssuedAt()
@@ -79,7 +86,7 @@ async function readFeishuState(state: string | null): Promise<string | null> {
         if (jwt.payload.type !== 'feishu_oauth_state') {
             return null
         }
-        return normalizeRedirectTarget(jwt.payload.target)
+        return safeRedirect(jwt.payload.target)
     } catch {
         return null
     }
@@ -172,12 +179,20 @@ export async function loginWithFeishu(code: string | null, state: string | null)
         return appendError(target, 'feishu')
     }
     const userInfoJson = await userInfoResponse.json()
-    console.log(userInfoJson)
     if (userInfoJson.code !== 0) {
         return appendError(target, 'feishu')
     }
 
     const feishuUser = userInfoJson.data ?? {}
+    // Only accept members of the school's own Feishu tenant
+    const tenantKey = process.env.FEISHU_TENANT_KEY
+    if (tenantKey != null && tenantKey.length > 0) {
+        if (feishuUser.tenant_key !== tenantKey) {
+            return appendError(target, 'feishu')
+        }
+    } else {
+        console.warn('FEISHU_TENANT_KEY is not set; Feishu logins are not restricted to the school tenant')
+    }
     const phone = normalizeMainlandMobile(feishuUser.mobile)
     if (phone.length < 1) {
         return appendError(target, 'feishu')
@@ -225,12 +240,13 @@ export async function loginWithFeishu(code: string | null, state: string | null)
     return target
 }
 
-export default async function login(error: boolean | null, tok: string | null, target: string): Promise<string> {
+export default async function login(error: boolean | null, tok: string | null, redirectTarget: string): Promise<string> {
     const head = await headers()
     const ip = head.get('X-Forwarded-For') ?? head.get('X-Real-IP') ?? 'localhost'
+    const target = safeRedirect(redirectTarget)
 
-    if (error) {
-        return target + '?error=seiue'
+    if (error || typeof tok !== 'string' || tok.length < 1) {
+        return appendError(target, 'seiue')
     }
 
     const r = await fetch('https://open.seiue.com/api/v3/oauth/me',
@@ -245,7 +261,7 @@ export default async function login(error: boolean | null, tok: string | null, t
     )
 
     if (!r.ok) {
-        return target + '?error=build'
+        return appendError(target, 'build')
     }
     const json = await r.json()
     let user = await prisma.user.findUnique({
@@ -301,5 +317,5 @@ export default async function login(error: boolean | null, tok: string | null, t
 
     await issueInternalLogin(user)
 
-    return target as string
+    return target
 }

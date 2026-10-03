@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUserIDFromHeader, validateFromHeader } from '@/app/lib/authorize-actions'
 import { unauthorized } from '@/app/api/base'
-import { getUserByID, getUserSimpleByID } from '@/app/lib/user-actions'
+import { getUserSimpleByID, getUserWithPhoneByID } from '@/app/lib/user-data'
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
     if (!await validateFromHeader(request, [ 'basic' ])) {
         return unauthorized()
     }
-
-    if (await validateFromHeader(request, [ 'phone' ])) {
-        return NextResponse.json(await getUserByID((await getUserIDFromHeader(request))!))
+    const userId = await getUserIDFromHeader(request)
+    if (userId == null) {
+        return unauthorized()
     }
-    return NextResponse.json(await getUserSimpleByID((await getUserIDFromHeader(request))!))
+
+    const user = await validateFromHeader(request, [ 'phone' ])
+        ? await getUserWithPhoneByID(userId)
+        : await getUserSimpleByID(userId)
+    if (user == null) {
+        return unauthorized()
+    }
+    return NextResponse.json(user)
 }
