@@ -1,7 +1,7 @@
 'use server'
 
-import { Application, ApprovalRequest, ApprovalStatus } from '@/generated/prisma/client'
-import { randomBytes, randomUUID } from 'node:crypto'
+import { Application, ApprovalRequest, ApprovalStatus, Scope } from '@/generated/prisma/client'
+import { createHash, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto'
 import { findUserOrThrow } from '@/app/lib/utils'
 import path from 'node:path'
 import sharp from 'sharp'
@@ -130,15 +130,53 @@ export async function verifyAppSecretByID(id: number, secret: string): Promise<b
             id
         }
     })
-    return app != null && app.clientSecret === secret
+    if (app == null || typeof secret !== 'string') {
+        return false
+    }
+    // Compare digests so the comparison takes the same time for any input
+    const expected = createHash('sha256').update(app.clientSecret).digest()
+    const actual = createHash('sha256').update(secret).digest()
+    return timingSafeEqual(expected, actual)
+}
+
+function isHttpURL(value: string): boolean {
+    try {
+        const url = new URL(value)
+        return url.protocol === 'https:' || url.protocol === 'http:'
+    } catch {
+        return false
+    }
+}
+
+function optionalHttpURL(value: unknown, field: string): string {
+    if (typeof value !== 'string') {
+        throw new Error(`Invalid ${field}`)
+    }
+    const trimmed = value.trim()
+    if (trimmed.length > 0 && !isHttpURL(trimmed)) {
+        throw new Error(`Invalid ${field}: must be an http(s) URL`)
+    }
+    return trimmed
+}
+
+function validRedirectURL(value: unknown): string {
+    if (typeof value !== 'string' || !isHttpURL(value) || new URL(value).hash !== '') {
+        throw new Error('Invalid redirect URL: must be an http(s) URL without a fragment')
+    }
+    return value
 }
 
 export async function createApp(formData: FormData): Promise<Application> {
     const user = await findUserOrThrow()
+    const name = formData.get('name')
+    if (typeof name !== 'string' || name.trim().length < 1 || name.length > 100) {
+        throw new Error('Invalid name')
+    }
+    const homepage = optionalHttpURL(formData.get('homepage'), 'homepage')
     const app = await prisma.application.create({
         data: {
-            name: formData.get('name') as string,
-            homepage: formData.get('homepage') as string,
+            name: name.trim(),
+            homepage,
             icon: null,
             redirectUrls: [],
             scopes: [],
@@ -181,7 +219,9 @@ export async function getMyAppByIDSecure(id: number): Promise<Application | null
             ownerId: user.admin ? undefined : user.seiueId
         }
     })
-    app!.clientSecret = ''
+    if (app != null) {
+        app.clientSecret = ''
+    }
     return app
 }
 
@@ -242,7 +282,7 @@ export async function getApprovalRequests(): Promise<ApprovalRequest[]> {
 }
 
 export async function getApprovalRequestForApp(id: number): Promise<ApprovalRequest | null> {
-    const app = getMyAppByID(id)
+    const app = await getMyAppByID(id)
     if (app == null) {
         throw new Error('Application not found')
     }
@@ -275,17 +315,63 @@ export async function createApprovalRequest(id: number): Promise<ApprovalRequest
     })
 }
 
-export async function updateApp(data: Partial<Application>): Promise<Application> {
+export interface AppUpdate {
+    id: number
+    message: string
+    homepage: string
+    terms: string
+    privacy: string
+    redirectUrls: string[]
+    scopes: Scope[]
+    accessGated: boolean
+    allowedUsers: number[]
+}
+
+export async function updateApp(update: AppUpdate): Promise<Application> {
     const user = await getMe()
+    if (update == null || typeof update.id !== 'number') {
+        throw new Error('Application not found')
+    }
     const app = await prisma.application.findFirst({
         where: {
-            id: data.id!,
+            id: update.id,
             ownerId: user.admin ? undefined : user.seiueId
         }
     })
     if (app == null) {
         throw new Error('Application not found')
     }
+
+    // Build the update from an explicit allow-list. Passing client input to
+    // Prisma directly would allow nested writes such as
+    // `owner: { update: { admin: true } }`.
+    if (typeof update.message !== 'string' || update.message.length > 1000) {
+        throw new Error('Invalid message')
+    }
+    if (!Array.isArray(update.redirectUrls) || update.redirectUrls.length > 20) {
+        throw new Error('Invalid redirect URLs')
+    }
+    if (!Array.isArray(update.scopes) || !update.scopes.every(s => (Object.values(Scope) as string[]).includes(s))) {
+        throw new Error('Invalid scopes')
+    }
+    if (typeof update.accessGated !== 'boolean') {
+        throw new Error('Invalid access gate')
+    }
+    if (!Array.isArray(update.allowedUsers) || !update.allowedUsers.every(u => Number.isSafeInteger(u))) {
+        throw new Error('Invalid allowed users')
+    }
+    const data = {
+        message: update.message,
+        homepage: optionalHttpURL(update.homepage, 'homepage'),
+        terms: optionalHttpURL(update.terms, 'terms'),
+        privacy: optionalHttpURL(update.privacy, 'privacy'),
+        redirectUrls: [ ...new Set(update.redirectUrls.map(validRedirectURL)) ],
+        scopes: [ ...new Set(update.scopes) ],
+        accessGated: update.accessGated,
+        allowedUsers: [ ...new Set(update.allowedUsers) ],
+        approved: ApprovalStatus.pending // Require re-approval when updating app
+    }
+
     await prisma.appAuditLog.create({
         data: {
             type: 'updated',
@@ -301,17 +387,14 @@ export async function updateApp(data: Partial<Application>): Promise<Application
             }
         }
     })
-    if (data.clientSecret != null || data.icon != null || data.clientId != null || data.approved != null ||
-        data.createdAt != null || data.updatedAt != null || data.ownerId != null || data.name != null) {
-        throw new Error('Invalid update for certain fields')
-    }
-    data.approved = ApprovalStatus.pending // Require re-approval when updating app
-    return prisma.application.update({
+    const updated = await prisma.application.update({
         where: {
             id: app.id
         },
         data
     })
+    updated.clientSecret = ''
+    return updated
 }
 
 export async function setAppApprovalStatus(id: number, approved: ApprovalStatus): Promise<Application> {
@@ -386,7 +469,10 @@ export async function uploadAppIcon(formData: FormData): Promise<Application> {
     if (app == null) {
         throw new Error('Application not found')
     }
-    const file = formData.get('icon') as File
+    const file = formData.get('icon')
+    if (!(file instanceof File) || file.size < 1 || file.size > 5 * 1024 * 1024) {
+        throw new Error('Invalid icon')
+    }
     const root = process.env.UPLOAD_ROOT
 
     await fsPromise.mkdir(path.join(root!, 'app-icons'), {recursive: true})

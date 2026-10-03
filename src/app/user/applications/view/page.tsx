@@ -16,7 +16,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { useTranslationClient } from '@/app/i18n/client'
 import { use, useEffect, useState } from 'react'
-import { $Enums, Application, ApprovalRequest, ApprovalStatus, User } from '@/generated/prisma/browser'
+import { $Enums, Application, ApprovalRequest, ApprovalStatus } from '@/generated/prisma/browser'
+import type { SafeUser } from '@/app/lib/user-actions'
 import { faClose, faRefresh, faWarning } from '@fortawesome/free-solid-svg-icons'
 import If from '@/app/lib/If'
 import CookiesBoundary from '@/app/lib/CookiesBoundary'
@@ -29,7 +30,7 @@ export default function WrappedApplicationView(props: { searchParams: Promise<ne
 
 function ApplicationView({ searchParams }: { searchParams: never }) {
     const { t } = useTranslationClient('applications')
-    const [ me, setMe ] = useState<User | null>(null)
+    const [ me, setMe ] = useState<SafeUser | null>(null)
     const router = useRouter()
 
     const [ copiedHighlight, setCopiedHighlight ] = useState(false)

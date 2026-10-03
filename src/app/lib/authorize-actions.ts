@@ -11,9 +11,14 @@ import { prisma } from '@/app/lib/prisma'
 
 const secret = createSecretKey(process.env.JWT_SECRET!, 'utf-8')
 
-export async function authorizeForCode(application: number, scopes: Scope[], state: string | null, redirectURI: string, includePhone: boolean = false): Promise<string | null> {
+export async function authorizeForCode(application: number, scopes: Scope[], state: string | null, redirectURI: string): Promise<string | null> {
     const me = await getMe()
     if (!me) {
+        return null
+    }
+    if (typeof application !== 'number' || typeof redirectURI !== 'string' ||
+        (state != null && typeof state !== 'string') || !Array.isArray(scopes) || scopes.length < 1 ||
+        !scopes.every(s => (Object.values(Scope) as string[]).includes(s))) {
         return null
     }
     const app = await prisma.application.findFirst({
@@ -28,6 +33,9 @@ export async function authorizeForCode(application: number, scopes: Scope[], sta
     if (app.approved !== ApprovalStatus.approved && app.ownerId !== me.seiueId) {
         return null
     }
+    if (app.accessGated && app.ownerId !== me.seiueId && !app.allowedUsers.includes(me.seiueId)) {
+        return null
+    }
     if (!scopes.every(s => app.scopes.includes(s))) {
         return null
     }
@@ -38,9 +46,8 @@ export async function authorizeForCode(application: number, scopes: Scope[], sta
     return await new SignJWT({
         user: me.seiueId,
         app: app.id,
-        scopes: scopes.map(s => s.toString()),
+        scopes: [ ...new Set(scopes.map(s => s.toString())) ],
         state: state,
-        phone: includePhone ? (me.phone == null ? null : `+86${me.phone}`) : null,
         redirectURI,
         type: 'authorization_code'
     })
@@ -391,6 +398,9 @@ export async function getUserIDFromHeader(request: NextRequest): Promise<number 
 
     try {
         const jwt = await jwtVerify(auth.replace('Bearer ', ''), secret)
+        if (jwt.payload.type !== 'access_token') {
+            return null
+        }
         return jwt.payload.user as number
     } catch {
         return null

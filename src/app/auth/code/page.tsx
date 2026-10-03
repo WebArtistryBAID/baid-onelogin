@@ -8,6 +8,7 @@ import { loginWithAccessCode } from '@/app/auth/callback/login'
 import If from '@/app/lib/If'
 import Branding from '@/app/lib/Branding'
 import CookiesBoundary from '@/app/lib/CookiesBoundary'
+import { safeRedirect } from '@/app/lib/safe-redirect'
 
 function Sub() {
     const {t} = useTranslationClient('auth')
@@ -17,7 +18,7 @@ function Sub() {
     const [error, setError] = useState(false)
     const router = useRouter()
 
-    const redirect = search.has('redirect') ? search.get('redirect')! : '/'
+    const redirect = safeRedirect(search.get('redirect'))
 
     return <div className="simple-container">
         <Branding/>

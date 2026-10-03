@@ -25,6 +25,7 @@ To run in development:
 | `SEIUE_CLIENT_ID`   | The client ID received from SEIUE for authentication.                                    |
 | `FEISHU_APP_ID`     | The app ID received from Feishu for authentication.                                      |
 | `FEISHU_APP_SECRET` | The app secret received from Feishu for authentication.                                  |
+| `FEISHU_TENANT_KEY` | The school's Feishu tenant key. Only users from this tenant can log in with Feishu.      |
 | `HOSTED`            | The location where OneLogin is hosted. No trailing slashes.                              |
 | `UPLOAD_ROOT`       | The directory where uploaded files are stored. In development, this is `public/uploads`. |
 | `UPLOAD_SERVE_PATH` | The path where uploaded files are served. In development, this is `uploads`.             |

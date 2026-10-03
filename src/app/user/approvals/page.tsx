@@ -1,5 +1,5 @@
 import { useTranslation } from '@/app/i18n'
-import { getApprovalRequests, getMyAppByID } from '@/app/lib/app-actions'
+import { getApprovalRequests, getMyAppByIDSecure } from '@/app/lib/app-actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHourglassEmpty } from '@fortawesome/free-solid-svg-icons'
 import { AppIcon } from '@/app/user/applications/AppIcon'
@@ -22,7 +22,7 @@ export default async function Approvals() {
 
     const apps: Application[] = []
     for (const request of requests) {
-        apps.push((await getMyAppByID(request.applicationId))!)
+        apps.push((await getMyAppByIDSecure(request.applicationId))!)
     }
 
     return <div className="h-full overflow-y-auto">

@@ -3,20 +3,13 @@ import {cookies} from 'next/headers'
 import {jwtVerify} from 'jose'
 import {hostedURL} from '@/app/lib/hosted-url'
 
-const protectedRoutes = [
-    '/',
-    '/user',
-    '/user/applications',
-    '/user/applications/create',
-    '/user/applications/view',
-    '/approvals',
-    '/authorizations',
-    '/oauth2/authorize'
-]
+function isProtected(path: string): boolean {
+    return path === '/' || path === '/oauth2/authorize' || path === '/user' || path.startsWith('/user/')
+}
 
 export default async function authMiddleware(req: NextRequest): Promise<NextResponse | null> {
     const path = req.nextUrl.pathname
-    if (!protectedRoutes.includes(path)) {
+    if (!isProtected(path)) {
         return null
     }
     const cookie = (await cookies()).get('access_token')?.value
@@ -24,7 +17,10 @@ export default async function authMiddleware(req: NextRequest): Promise<NextResp
         return NextResponse.redirect(hostedURL(`/auth?redirect=${encodeURIComponent(req.nextUrl.pathname + req.nextUrl.search)}`))
     }
     try {
-        await jwtVerify(cookie, new TextEncoder().encode(process.env.JWT_SECRET!))
+        const jwt = await jwtVerify(cookie, new TextEncoder().encode(process.env.JWT_SECRET!))
+        if (jwt.payload.type !== 'internal') {
+            throw new Error('Invalid token type')
+        }
     } catch {
         return NextResponse.redirect(hostedURL(`/auth?redirect=${encodeURIComponent(req.nextUrl.pathname + req.nextUrl.search)}`))
     }
